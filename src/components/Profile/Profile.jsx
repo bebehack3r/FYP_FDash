@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
+import Menu from "../Menu/Menu.jsx";
+
 import logo from "./logo.png";
 import avatar from "./avatar.png";
 
@@ -110,7 +112,8 @@ const Profile = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [pass, setPass] = useState("");
-  const [userID, setUserID] = useState(1);
+  const [role, setRole] = useState("");
+  const [userID, setUserID] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [error, setError] = useState(null);
 
@@ -128,10 +131,19 @@ const Profile = () => {
 
   const edit = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/update_user_profile', { id: userID, email, name, pass });
-      if(response.message == 'OK') navigate("/login");
+      const response = await axios.post('http://localhost:8000/update_user_profile', {
+        id: userID,
+        email,
+        name,
+        pass
+      }, { 
+        headers: {
+          Authorization: `Bearer ${token}`
+        } 
+      });
+      if(response.data.message == 'OK') navigate("/profile");
       else {
-        if(response.message == 'ERROR') setError(response.data);
+        if(response.data.message == 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
       }
     } catch (error) {
@@ -145,23 +157,33 @@ const Profile = () => {
   }
 
   useEffect(() => {
-    // if (!token) {
-    //   console.error('Token not found');
-    //   navigate("/login");
-    // }
+    if (!token) {
+      console.error('Token not found');
+      navigate("/login");
+    }
+
+    let base64Url = token.split('.')[1];
+    let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    const { id } = JSON.parse(jsonPayload);
+    setUserID(id);
+
     const loadProfile = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/get_user_profile/${userID}`, {
+        const response = await axios.get(`http://localhost:8000/get_user_profile/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
-        if(response.message == 'OK') {
-          setName(response.data.name);
-          setEmail(response.data.email);
-          setPass(response.data.pass);
+        if(response.data.message == 'OK') {
+          setName(response.data.data.name);
+          setEmail(response.data.data.email);
+          setPass(response.data.data.pass);
+          setRole(response.data.data.role);
         } else {
-          if(response.message == 'ERROR') setError(response.data);
+          if(response.data.message == 'ERROR') setError(response.data.data);
           else setError('Backend server malfunction. Please, contact your supplier');
         }
       } catch (error) {
@@ -174,6 +196,7 @@ const Profile = () => {
 
   return(
     <Wrap>
+      <Menu />
       <ActionBlock>
         <ActionBlockDiv>
           <Header>
@@ -185,13 +208,13 @@ const Profile = () => {
           </AvatarImageBlock>
           <ActionBlockDivInner>
             <LabelField htmlFor='name'>Name</LabelField>
-            <InputField type='text' id='name' name='name' placeholder='Enter your name' onChange={handleName} />
+            <InputField type='text' id='name' name='name' placeholder='Enter your name' value={name} onChange={handleName} />
             <LabelField htmlFor='email'>E-mail</LabelField>
-            <InputField type='text' id='email' name='email' placeholder='Enter your e-mail' onChange={handleEmail} />
+            <InputField type='text' id='email' name='email' placeholder='Enter your e-mail' value={email} onChange={handleEmail} />
             <LabelField htmlFor='password'>Password</LabelField>
-            <InputField type='password' id='password' name='password' placeholder='Enter your password' onChange={handlePass} />
+            <InputField type='password' id='password' name='password' placeholder='Enter your password' value={pass} onChange={handlePass} />
             <LabelField htmlFor='role'>Role</LabelField>
-            <InputField type='role' id='role' name='role' placeholder='Your role' disabled={true} value='Analyst' />
+            <InputField type='role' id='role' name='role' placeholder='Your role' disabled={true} value={role} />
             <SubmitButton type='submit' id='submit' name='submit' onClick={edit} value="Update Info" />
             <SubmitButton type='submit' id='goBack' name='goBack' onClick={goBack} value="Back" />
           </ActionBlockDivInner>

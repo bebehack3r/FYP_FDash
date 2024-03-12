@@ -79,6 +79,7 @@ const SubmitButton = styled.input`
   margin-left: 25%;
   font-size: 16pt;
   color: black;
+  margin-bottom: 15px;
 
   &:hover {
     cursor: pointer;
@@ -104,6 +105,7 @@ const Register = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [role, setRole] = useState("");
   const [pass, setPass] = useState("");
   const [rePass, setRePass] = useState("");
   const [token, setToken] = useState(localStorage.getItem("token"));
@@ -125,16 +127,24 @@ const Register = () => {
     setRePass(e.target.value);
   };
 
+  const handleRole = (e) => {
+    setRole(e.target.value);
+  };
+
   const register = async () => {
     if(pass != rePass) {
       setError("Passwords do not match");
       return;
     }
     try {
-      const response = await axios.post('http://localhost:8000/register', { email, name, pass });
-      if(response.message == 'OK') navigate("/login");
+      const response = await axios.post('http://localhost:8000/register', { email, name, pass, role }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if(response.data.message == 'OK') navigate("/successUser");
       else {
-        if(response.message == 'ERROR') setError(response.data);
+        if(response.data.message == 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
       }
     } catch (error) {
@@ -143,16 +153,16 @@ const Register = () => {
     }
   };
 
+  const goBack = () => {
+    navigate("/dashboard");
+  };
+
   useEffect(() => {
-    if (token) {
-      console.error('Token found');
-      navigate("/dashboard");
+    if (!token) {
+      console.error('Token not found');
+      navigate("/login");
     }
   }, []);
-
-  const goSignIn = () => {
-    navigate("/login");
-  };
 
   return(
     <Wrap>
@@ -160,21 +170,22 @@ const Register = () => {
         <ActionBlockDiv>
           <Header>
             <HeaderLogo src={logo} />
-            <h1>Sign Up</h1>
+            <h1>Create Account</h1>
           </Header>
-          <h3>Welcome to the Future of ID Management: Our Web-Based Solution</h3>
+          <h3>{error ? error : 'Sysadmin page to create new accounts'}</h3>
           <ActionBlockDivInner>
             <LabelField htmlFor='name'>Name</LabelField>
-            <InputField type='text' id='name' name='name' placeholder='Enter your name' onChange={handleName} />
+            <InputField type='text' id='name' name='name' placeholder='Enter name' onChange={handleName} />
             <LabelField htmlFor='email'>E-mail</LabelField>
-            <InputField type='text' id='email' name='email' placeholder='Enter your e-mail' onChange={handleEmail} />
+            <InputField type='text' id='email' name='email' placeholder='Enter e-mail' onChange={handleEmail} />
+            <LabelField htmlFor='role'>Role</LabelField>
+            <InputField type='text' id='role' name='role' placeholder='Enter role' onChange={handleRole} />
             <LabelField htmlFor='password'>Password</LabelField>
-            <InputField type='password' id='password' name='password' placeholder='Enter your password' onChange={handlePass} />
+            <InputField type='password' id='password' name='password' placeholder='Enter password' onChange={handlePass} />
             <LabelField htmlFor='repassword'>Confirm password</LabelField>
             <InputField type='password' id='repassword' name='repassword' placeholder='Confirm password' onChange={handleRePass} />
-            <SubmitButton type='submit' id='submit' name='submit' onClick={register} value="Sign Up" />
-            <h3>–––––––––– or ––––––––––</h3>
-            <SubmitButton type='submit' id='submit' name='submit' onClick={goSignIn} value="Log In" />
+            <SubmitButton type='submit' id='submit' name='submit' onClick={register} value="Create New Account" />
+            <SubmitButton type='submit' id='submit' name='submit' onClick={goBack} value="Go Back" />
           </ActionBlockDivInner>
         </ActionBlockDiv>
       </ActionBlock>

@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
+import Menu from "../Menu/Menu.jsx";
+
 import logo from "./logo.png";
 
 const Wrap = styled.div`
@@ -31,8 +33,8 @@ const ActionBlockDiv = styled.div`
   box-shadow: 1px 1px 15px rgba(0,0,0,0.5);
   background: #161414;
   width: 60vw;
-  height: 30vh;
-  margin-top: 35vh;
+  min-height: 30vh;
+  margin-top: 10vh;
   color: white;
 `;
 
@@ -66,27 +68,48 @@ const InputField = styled.input`
   padding: 5px 10px;
 `;
 
+const OptionButtons = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 60%;
+`;
+
 const SubmitButton = styled.input`
   background: #8454F6;
   border: none;
   border-radius: 5px;
   padding-top: 15px;
   padding-bottom: 15px;
-  width: 50%;
-  margin-left: 25%;
   font-size: 16pt;
   color: black;
   margin-bottom: 15px;
-
+  width: 45%;
+  margin-left: 5%;
   &:hover {
     cursor: pointer;
     background: #6943C4;
   }
 `;
 
+const FileContents = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  text-align: left;
+  background: black;
+  padding: 15px 15px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  max-height: 50vh;
+  overflow: scroll;
+  width: 90%;
+`;
+
 const Upload = () => {
   const navigate = useNavigate();
   const [file, setFile] = useState(null);
+  const [contents, setContents] = useState(null);
   const [error, setError] = useState(null);
   const token = localStorage.getItem("token");
 
@@ -94,13 +117,29 @@ const Upload = () => {
     if (e.target.files) setFile(e.target.files[0]);
   };
 
+  const readFile = () => {
+    const reader = new FileReader();
+    reader.readAsText(file, "UTF-8");
+    reader.onload = (e) => {
+      const c = e.target.result.split('\n');
+      setContents(c);
+    };
+  };
+
   const uploadLog = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/upload_log', { file });
-      if(response.message == 'OK') {
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await axios.post('http://localhost:8000/upload_log', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      if(response.data.message == 'OK') {
         navigate("/dashboard");
       } else {
-        if(response.message == 'ERROR') setError(response.data);
+        if(response.data.message == 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
       }
     } catch (error) {
@@ -110,14 +149,15 @@ const Upload = () => {
   };
 
   useEffect(() => {
-    // if (!token) {
-    //   console.error('Token not found');
-    //   navigate("/login");
-    // }
+    if (!token) {
+      console.error('Token not found');
+      navigate("/login");
+    }
   }, []);
 
   return(
     <Wrap>
+      <Menu />
       <ActionBlock>
         <ActionBlockDiv>
           <Header>
@@ -126,8 +166,14 @@ const Upload = () => {
           </Header>
           <ActionBlockDivInner>
             <InputField type='file' id='file' name='file' placeholder="File" onChange={handleFileChange} />
-            <SubmitButton type='submit' id='submit' name='submit' onClick={uploadLog} value="Upload File!" />
+            <OptionButtons>
+              <SubmitButton type='submit' id='submit' name='submit' onClick={uploadLog} value="Upload File!" />
+              <SubmitButton type='submit' id='submit' name='submit' onClick={readFile} value="Read" />
+            </OptionButtons>
           </ActionBlockDivInner>
+          {contents && <FileContents>
+            { contents.map(l => <pre>{l}</pre>) }
+          </FileContents>}
         </ActionBlockDiv>
       </ActionBlock>
     </Wrap>
