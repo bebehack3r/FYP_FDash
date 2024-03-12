@@ -129,9 +129,9 @@ const Login = () => {
         <h1>Web-based IDS System</h1>
         <LoginDiv>
           <LoginDivInner>
-            <LabelField for='login'>E-mail</LabelField>
+            <LabelField htmlFor='login'>E-mail</LabelField>
             <InputField type='text' id='login' name='login' onChange={handleEmail} placeholder="Enter your e-mail" />
-            <LabelField for='password'>Password</LabelField>
+            <LabelField htmlFor='password'>Password</LabelField>
             <InputField type='password' id='password' name='password' onChange={handlePass} placeholder="Enter your password" />
             <SubmitButton type='submit' id='submit' name='submit' onClick={login} value="Log In" />
             <h3>–––––––––– or ––––––––––</h3>
