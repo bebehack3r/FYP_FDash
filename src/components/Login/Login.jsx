@@ -28,7 +28,7 @@ const LogoImage = styled.img`
   border-radius: 20px;
 `;
 
-const LoginBlock = styled.div`
+const ActionBlock = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -37,7 +37,7 @@ const LoginBlock = styled.div`
   color: white;
 `;
 
-const LoginDiv = styled.div`
+const ActionBlockDiv = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -49,7 +49,7 @@ const LoginDiv = styled.div`
   color: white;
 `;
 
-const LoginDivInner = styled.div`
+const ActionBlockDivInner = styled.div`
   display: flex;
   flex-direction: column;
   width: 80%;
@@ -78,6 +78,11 @@ const SubmitButton = styled.input`
   margin-left: 25%;
   font-size: 16pt;
   color: black;
+
+  &:hover {
+    cursor: pointer;
+    background: #6943C4;
+  }
 `;
 
 const Login = () => {
@@ -124,11 +129,11 @@ const Login = () => {
 
   return(
     <Wrap>
-      <LoginBlock>
+      <ActionBlock>
         <h1>Welcome to Dash!</h1>
         <h1>Web-based IDS System</h1>
-        <LoginDiv>
-          <LoginDivInner>
+        <ActionBlockDiv>
+          <ActionBlockDivInner>
             <LabelField htmlFor='login'>E-mail</LabelField>
             <InputField type='text' id='login' name='login' onChange={handleEmail} placeholder="Enter your e-mail" />
             <LabelField htmlFor='password'>Password</LabelField>
@@ -136,9 +141,9 @@ const Login = () => {
             <SubmitButton type='submit' id='submit' name='submit' onClick={login} value="Log In" />
             <h3>–––––––––– or ––––––––––</h3>
             <SubmitButton type='submit' id='submit' name='submit' onClick={goSignUp} value="Create New Account" />
-          </LoginDivInner>
-        </LoginDiv>
-      </LoginBlock>
+          </ActionBlockDivInner>
+        </ActionBlockDiv>
+      </ActionBlock>
       <LogoBlock>
         <LogoImage src={logo} />
       </LogoBlock>

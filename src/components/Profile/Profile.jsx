@@ -14,7 +14,7 @@ const Wrap = styled.div`
   justify-content: space-between;
 `;
 
-const LoginBlock = styled.div`
+const ActionBlock = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -23,12 +23,13 @@ const LoginBlock = styled.div`
   color: white;
 `;
 
-const LoginDiv = styled.div`
+const ActionBlockDiv = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 15px;
+  border-radius: 5px;
+  box-shadow: 1px 1px 15px rgba(0,0,0,0.5);
   background: #161414;
   width: 60vw;
   height: 80vh;
@@ -36,7 +37,7 @@ const LoginDiv = styled.div`
   color: white;
 `;
 
-const LoginDivInner = styled.div`
+const ActionBlockDivInner = styled.div`
   display: flex;
   flex-direction: column;
   width: 80%;
@@ -66,6 +67,11 @@ const SubmitButton = styled.input`
   font-size: 16pt;
   color: black;
   margin-bottom: 15px;
+
+  &:hover {
+    cursor: pointer;
+    background: #6943C4;
+  }
 `;
 
 const Header = styled.div`
@@ -168,8 +174,8 @@ const Profile = () => {
 
   return(
     <Wrap>
-      <LoginBlock>
-        <LoginDiv>
+      <ActionBlock>
+        <ActionBlockDiv>
           <Header>
             <HeaderLogo src={logo} />
             <h1>User Profile</h1>
@@ -177,7 +183,7 @@ const Profile = () => {
           <AvatarImageBlock>
             <AvatarImage src={avatar} />
           </AvatarImageBlock>
-          <LoginDivInner>
+          <ActionBlockDivInner>
             <LabelField htmlFor='name'>Name</LabelField>
             <InputField type='text' id='name' name='name' placeholder='Enter your name' onChange={handleName} />
             <LabelField htmlFor='email'>E-mail</LabelField>
@@ -188,9 +194,9 @@ const Profile = () => {
             <InputField type='role' id='role' name='role' placeholder='Your role' disabled={true} value='Analyst' />
             <SubmitButton type='submit' id='submit' name='submit' onClick={edit} value="Update Info" />
             <SubmitButton type='submit' id='goBack' name='goBack' onClick={goBack} value="Back" />
-          </LoginDivInner>
-        </LoginDiv>
-      </LoginBlock>
+          </ActionBlockDivInner>
+        </ActionBlockDiv>
+      </ActionBlock>
     </Wrap>
   );
 };

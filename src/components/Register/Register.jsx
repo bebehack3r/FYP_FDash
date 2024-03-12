@@ -29,7 +29,7 @@ const LogoImage = styled.img`
   border-radius: 20px;
 `;
 
-const LoginBlock = styled.div`
+const ActionBlock = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -38,7 +38,7 @@ const LoginBlock = styled.div`
   color: white;
 `;
 
-const LoginDiv = styled.div`
+const ActionBlockDiv = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -50,7 +50,7 @@ const LoginDiv = styled.div`
   color: white;
 `;
 
-const LoginDivInner = styled.div`
+const ActionBlockDivInner = styled.div`
   display: flex;
   flex-direction: column;
   width: 80%;
@@ -79,6 +79,11 @@ const SubmitButton = styled.input`
   margin-left: 25%;
   font-size: 16pt;
   color: black;
+
+  &:hover {
+    cursor: pointer;
+    background: #6943C4;
+  }
 `;
 
 const Header = styled.div`
@@ -151,14 +156,14 @@ const Register = () => {
 
   return(
     <Wrap>
-      <LoginBlock>
-        <LoginDiv>
+      <ActionBlock>
+        <ActionBlockDiv>
           <Header>
             <HeaderLogo src={logo} />
             <h1>Sign Up</h1>
           </Header>
           <h3>Welcome to the Future of ID Management: Our Web-Based Solution</h3>
-          <LoginDivInner>
+          <ActionBlockDivInner>
             <LabelField htmlFor='name'>Name</LabelField>
             <InputField type='text' id='name' name='name' placeholder='Enter your name' onChange={handleName} />
             <LabelField htmlFor='email'>E-mail</LabelField>
@@ -170,9 +175,9 @@ const Register = () => {
             <SubmitButton type='submit' id='submit' name='submit' onClick={register} value="Sign Up" />
             <h3>–––––––––– or ––––––––––</h3>
             <SubmitButton type='submit' id='submit' name='submit' onClick={goSignIn} value="Log In" />
-          </LoginDivInner>
-        </LoginDiv>
-      </LoginBlock>
+          </ActionBlockDivInner>
+        </ActionBlockDiv>
+      </ActionBlock>
       <LogoBlock>
         <LogoImage src={right} />
       </LogoBlock>
