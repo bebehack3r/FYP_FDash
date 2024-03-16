@@ -116,10 +116,6 @@ const Login = () => {
     }
   };
 
-  const goSignUp = () => {
-    navigate("/register");
-  };
-
   useEffect(() => {
     if (token) {
       console.error('Token found');
@@ -140,8 +136,6 @@ const Login = () => {
             <LabelField htmlFor='password'>Password</LabelField>
             <InputField type='password' id='password' name='password' onChange={handlePass} placeholder="Enter your password" />
             <SubmitButton type='submit' id='submit' name='submit' onClick={login} value="Log In" />
-            <h3>–––––––––– or ––––––––––</h3>
-            <SubmitButton type='submit' id='submit' name='submit' onClick={goSignUp} value="Create New Account" />
           </ActionBlockDivInner>
         </ActionBlockDiv>
       </ActionBlock>

@@ -29,6 +29,11 @@ const Menu = () => {
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
+  if(!token) {
+    console.error("No token found!");
+    navigate("/login");
+    return;
+  }
   let base64Url = token.split('.')[1];
   let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
   const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
@@ -66,8 +71,8 @@ const Menu = () => {
       <NavItem onClick={dashboard}>Dashboard</NavItem>
       <NavItem onClick={uploadFile}>Upload</NavItem>
       <NavItem onClick={profile}>Profile</NavItem>
-      { role == "user" && <NavItem onClick={createAcc}>Create New Account</NavItem> }
-      { role == "user" && <NavItem onClick={manageUsers}>Manage Users</NavItem> }
+      { role == "admin" && <NavItem onClick={createAcc}>Create New Account</NavItem> }
+      { role == "admin" && <NavItem onClick={manageUsers}>Manage Users</NavItem> }
       <NavItem onClick={logOut}>Log Out</NavItem>
     </Wrap>
   );

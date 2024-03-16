@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
@@ -141,6 +142,7 @@ const CustomAlertEdit = styled.span`
 `;
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [logs, setLogs] = useState([]);
   const [logID, setLogID] = useState(null);
   const [logContent, setLogContent] = useState(null);
@@ -333,6 +335,11 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    if (!token) {
+      console.error('No token found');
+      navigate("/login");
+      return;
+    }
     if(!logAnalysis) return;
     if(logAnalysis.length == 0) return setSimpleThreats(null);
     const threats = logAnalysis.map(e => {
@@ -350,6 +357,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (!token) {
       console.error('No token found');
+      navigate("/login");
       return;
     }
 
