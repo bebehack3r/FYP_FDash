@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
+import Landing from './components/Landing/Landing.jsx';
 import Dashboard from './components/Dashboard/Dashboard.jsx';
 import Login from './components/Login/Login.jsx';
 import Register from './components/Register/Register.jsx';
@@ -13,7 +14,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route exact path="/" Component={Dashboard} />
+        <Route exact path="/" Component={Landing} />
         <Route path="/dashboard" Component={Dashboard} />
         <Route path="/login" Component={Login} />
         <Route path="/register" Component={Register} />
