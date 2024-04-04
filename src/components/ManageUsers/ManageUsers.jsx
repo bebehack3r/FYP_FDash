@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import styled from "styled-components";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import styled from 'styled-components';
 
-import Menu from "../Menu/Menu.jsx";
+import Menu from '../Menu/Menu.jsx';
 
 const Wrap = styled.div`
   display: flex;
@@ -151,11 +151,11 @@ const ManageUsers = () => {
                 <UserListCell>{user.name}</UserListCell>
                 <UserListCell>{user.email}</UserListCell>
                 <UserListCell>
-                  <RoleOptions name="role" id="role" onChange={(e) => { handleRoleSwitch(user.id, e.target.value) }}>
-                    <option value="user" selected={user.role === "user"}>User</option>
-                    <option value="analyst" selected={user.role === "analyst"}>Analyst</option>
-                    <option value="admin" selected={user.role === "admin"}>Admin</option>
-                    <option value="suspended" selected={user.role === "suspended"}>Suspended</option>
+                  <RoleOptions name='role' id='role' onChange={(e) => { handleRoleSwitch(user.id, e.target.value) }}>
+                    <option value='user' selected={user.role === 'user'}>User</option>
+                    <option value='analyst' selected={user.role === 'analyst'}>Analyst</option>
+                    <option value='admin' selected={user.role === 'admin'}>Admin</option>
+                    <option value='suspended' selected={user.role === 'suspended'}>Suspended</option>
                   </RoleOptions>
                 </UserListCell>
                 <UserListCellAction onClick={()=>{suspendUser(user.id)}}>Suspend!</UserListCellAction>

@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import styled from "styled-components";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import styled from 'styled-components';
 
-import Menu from "../Menu/Menu.jsx";
+import Menu from '../Menu/Menu.jsx';
 
-import logo from "./logo.png";
-import avatar from "./avatar.png";
+import logo from './logo.png';
+import avatar from './avatar.png';
 
 const Wrap = styled.div`
   display: flex;
@@ -109,12 +109,12 @@ const AvatarImage = styled.img`
 const Profile = () => {
 
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [pass, setPass] = useState("");
-  const [role, setRole] = useState("");
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [pass, setPass] = useState('');
+  const [role, setRole] = useState('');
   const [userID, setUserID] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [token, setToken] = useState(localStorage.getItem('token'));
   const [error, setError] = useState(null);
 
   const handleName = (e) => {
@@ -141,7 +141,7 @@ const Profile = () => {
           Authorization: `Bearer ${token}`
         } 
       });
-      if(response.data.message === 'OK') navigate("/profile");
+      if(response.data.message === 'OK') navigate('/profile');
       else {
         if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
@@ -154,14 +154,14 @@ const Profile = () => {
   };
 
   const goBack = () => {
-    navigate("/dashboard");
+    navigate('/dashboard');
   }
 
   useEffect(() => {
     if (!token) {
       console.error('Token not found');
       setToken(localStorage.getItem('token'));
-      navigate("/login");
+      navigate('/login');
     }
 
     let base64Url = token.split('.')[1];
@@ -218,8 +218,8 @@ const Profile = () => {
             <InputField type='password' id='password' name='password' placeholder='Enter your password' value={pass} onChange={handlePass} />
             <LabelField htmlFor='role'>Role</LabelField>
             <InputField type='role' id='role' name='role' placeholder='Your role' disabled={true} value={role} />
-            <SubmitButton type='submit' id='submit' name='submit' onClick={edit} value="Update Info" />
-            <SubmitButton type='submit' id='goBack' name='goBack' onClick={goBack} value="Back" />
+            <SubmitButton type='submit' id='submit' name='submit' onClick={edit} value='Update Info' />
+            <SubmitButton type='submit' id='goBack' name='goBack' onClick={goBack} value='Back' />
           </ActionBlockDivInner>
         </ActionBlockDiv>
       </ActionBlock>

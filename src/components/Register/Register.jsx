@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import styled from "styled-components";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import styled from 'styled-components';
 
-import right from "./right.png";
-import logo from "./logo.png";
+import right from './right.png';
+import logo from './logo.png';
 
 const Wrap = styled.div`
   display: flex;
@@ -103,12 +103,12 @@ const HeaderLogo = styled.img`
 const Register = () => {
 
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [role, setRole] = useState("");
-  const [pass, setPass] = useState("");
-  const [rePass, setRePass] = useState("");
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [role, setRole] = useState('');
+  const [pass, setPass] = useState('');
+  const [rePass, setRePass] = useState('');
+  const [token, setToken] = useState(localStorage.getItem('token'));
   const [error, setError] = useState(null);
 
   const handleName = (e) => {
@@ -133,7 +133,7 @@ const Register = () => {
 
   const register = async () => {
     if(pass !== rePass) {
-      setError("Passwords do not match");
+      setError('Passwords do not match');
       return;
     }
     try {
@@ -142,7 +142,7 @@ const Register = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      if(response.data.message === 'OK') navigate("/successUser");
+      if(response.data.message === 'OK') navigate('/successUser');
       else {
         if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
@@ -154,14 +154,14 @@ const Register = () => {
   };
 
   const goBack = () => {
-    navigate("/dashboard");
+    navigate('/dashboard');
   };
 
   useEffect(() => {
     if (!token) {
       console.error('Token not found');
       setToken(localStorage.getItem('token'));
-      navigate("/login");
+      navigate('/login');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -186,8 +186,8 @@ const Register = () => {
             <InputField type='password' id='password' name='password' placeholder='Enter password' onChange={handlePass} />
             <LabelField htmlFor='repassword'>Confirm password</LabelField>
             <InputField type='password' id='repassword' name='repassword' placeholder='Confirm password' onChange={handleRePass} />
-            <SubmitButton type='submit' id='submit' name='submit' onClick={register} value="Create New Account" />
-            <SubmitButton type='submit' id='submit' name='submit' onClick={goBack} value="Go Back" />
+            <SubmitButton type='submit' id='submit' name='submit' onClick={register} value='Create New Account' />
+            <SubmitButton type='submit' id='submit' name='submit' onClick={goBack} value='Go Back' />
           </ActionBlockDivInner>
         </ActionBlockDiv>
       </ActionBlock>

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import styled from "styled-components";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import styled from 'styled-components';
 
-import Menu from "../Menu/Menu.jsx";
+import Menu from '../Menu/Menu.jsx';
 
-import logo from "./logo.png";
+import logo from './logo.png';
 
 const Wrap = styled.div`
   display: flex;
@@ -96,7 +96,7 @@ const Api = () => {
   const navigate = useNavigate();
   const [url, setURL] = useState(null);
   const [error, setError] = useState(null);
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('token');
 
   const handleAPIChange = (e) => {
     if (e.target.files) setURL(e.target.files[0]);
@@ -111,7 +111,7 @@ const Api = () => {
         }
       });
       if(response.data.message === 'OK') {
-        navigate("/dashboard");
+        navigate('/dashboard');
       } else {
         if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
@@ -126,7 +126,7 @@ const Api = () => {
   useEffect(() => {
     if (!token) {
       console.error('Token not found');
-      navigate("/login");
+      navigate('/login');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -143,7 +143,7 @@ const Api = () => {
           <ActionBlockDivInner>
             <InputField type='text' id='url' name='url' placeholder='API URL' onChange={handleAPIChange} />
             <OptionButtons>
-              <SubmitButton type='submit' id='submit' name='submit' onClick={addAPI} value="Add Endpoint!" />
+              <SubmitButton type='submit' id='submit' name='submit' onClick={addAPI} value='Add Endpoint!' />
             </OptionButtons>
           </ActionBlockDivInner>
         </ActionBlockDiv>

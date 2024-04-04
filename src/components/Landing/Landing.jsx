@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import styled from "styled-components";
+import React, { useState, useEffect } from 'react';
+// import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import styled from 'styled-components';
 
-import plexus from "./145026-785786148.mp4";
+import plexus from './145026-785786148.mp4';
 
 const Wrap = styled.div`
   display: flex;
@@ -123,7 +123,7 @@ const Landing = () => {
     try {
       const response = await axios.get('http://localhost:8000/promo_data/');
       if(response.data.message === 'OK') {
-        console.log("fetched");
+        console.log('fetched');
         setCompanies(response.data.data.companies);
         setThreats(response.data.data.threats);
         setAttacks(response.data.data.attacks);
@@ -152,9 +152,9 @@ const Landing = () => {
     console.log('wow');
     if(document.getElementById('dynamicBlock').getBoundingClientRect().top < window.innerHeight / 1.2) {
       console.log(companies);
-      const companiesAmount = document.getElementById("companiesAmnt");
-      const threatsAmount = document.getElementById("threatsAmnt");
-      const attacksAmount = document.getElementById("attacksAmnt");
+      const companiesAmount = document.getElementById('companiesAmnt');
+      const threatsAmount = document.getElementById('threatsAmnt');
+      const attacksAmount = document.getElementById('attacksAmnt');
       animateIncrement(companiesAmount, companies);
       animateIncrement(threatsAmount, threats);
       animateIncrement(attacksAmount, attacks);
@@ -177,14 +177,14 @@ const Landing = () => {
 
   return(
     <Wrap>
-      <Block style={{ background: 'white', position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <Block style={{ background: 'white', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         { 
         // HEADER BLOCK 
         }
-        <span style={{ zIndex: 999, fontSize: "50pt" }}>Dash</span>
-        <span style={{ zIndex: 999, fontSize: "20pt" }}>Simple Cybersecurity Visualization</span>
-        <video autoPlay loop muted style={{ zIndex: 1, position: "absolute", width: "100%", height: "auto" }}>
-          <source src={plexus} type="video/mp4" />
+        <span style={{ zIndex: 999, fontSize: '50pt' }}>Dash</span>
+        <span style={{ zIndex: 999, fontSize: '20pt' }}>Simple Cybersecurity Visualization</span>
+        <video autoPlay loop muted style={{ zIndex: 1, position: 'absolute', width: '100%', height: 'auto' }}>
+          <source src={plexus} type='video/mp4' />
         </video>
       </Block>
       <Block>
@@ -198,19 +198,19 @@ const Landing = () => {
         { 
         // DYNAMIC DATA BLOCK 
         }
-        <div style={{ width: '80%', marginLeft: '10%' }} id="dynamicBlock">
+        <div style={{ width: '80%', marginLeft: '10%' }} id='dynamicBlock'>
           <Row>
             <Column>
               <DynamicDescription>Happy Customers</DynamicDescription>
-              <DynamicData id="companiesAmnt">0</DynamicData>
+              <DynamicData id='companiesAmnt'>0</DynamicData>
             </Column>
             <Column>
               <DynamicDescription>Identified Threats</DynamicDescription>
-              <DynamicData id="threatsAmnt">0</DynamicData>
+              <DynamicData id='threatsAmnt'>0</DynamicData>
             </Column>
             <Column>
               <DynamicDescription>Attacks Prevented</DynamicDescription>
-              <DynamicData id="attacksAmnt">0</DynamicData>
+              <DynamicData id='attacksAmnt'>0</DynamicData>
             </Column>
           </Row>
         </div>
@@ -279,32 +279,32 @@ const Landing = () => {
         <form style={{ display: 'flex', marginTop: '30px', flexDirection: 'column', width: '50vw', marginLeft: '25vw', alignItems: 'flex-start', textAlign: 'left' }}>
           <Row>
             <Column style={{ marginRight: '30px' }}>
-              <label htmlFor="fullName">Full Name: </label>
-              <RegisterInput type="text" name="fullName" placeholder="Full Name" />
+              <label htmlFor='fullName'>Full Name: </label>
+              <RegisterInput type='text' name='fullName' placeholder='Full Name' />
             </Column>
             <Column>
-              <label htmlFor="fullName">Company Name: </label>
-              <RegisterInput type="text" name="companyName" placeholder="Company Name" />
+              <label htmlFor='fullName'>Company Name: </label>
+              <RegisterInput type='text' name='companyName' placeholder='Company Name' />
             </Column>
           </Row>
           <Row>
             <Column style={{ marginRight: '30px' }}>
-              <label htmlFor="fullName">Company Size: </label>
-              <RegisterInput type="text" name="employeesCount" placeholder="Amount of Employees" />
+              <label htmlFor='fullName'>Company Size: </label>
+              <RegisterInput type='text' name='employeesCount' placeholder='Amount of Employees' />
             </Column>
             <Column>
-              <label htmlFor="fullName">Company E-mail: </label>
-              <RegisterInput type="text" name="email" placeholder="E-mail" />
+              <label htmlFor='fullName'>Company E-mail: </label>
+              <RegisterInput type='text' name='email' placeholder='E-mail' />
             </Column>
           </Row>
           <Row>
             <Column style={{ marginRight: '30px' }}>
-              <label htmlFor="fullName">Password: </label>
-              <RegisterInput type="text" name="password" placeholder="Password" />
+              <label htmlFor='fullName'>Password: </label>
+              <RegisterInput type='text' name='password' placeholder='Password' />
             </Column>
             <Column>
-              <label htmlFor="fullName">Confirm Password: </label>
-              <RegisterInput type="text" name="passwordConfirm" placeholder="Confirm Password" />
+              <label htmlFor='fullName'>Confirm Password: </label>
+              <RegisterInput type='text' name='passwordConfirm' placeholder='Confirm Password' />
             </Column>
           </Row>
           <SubscriptionButton>Join Dash</SubscriptionButton>

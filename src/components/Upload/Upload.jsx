@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import styled from "styled-components";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import styled from 'styled-components';
 
-import Menu from "../Menu/Menu.jsx";
+import Menu from '../Menu/Menu.jsx';
 
-import logo from "./logo.png";
+import logo from './logo.png';
 
 const Wrap = styled.div`
   display: flex;
@@ -111,7 +111,7 @@ const Upload = () => {
   const [file, setFile] = useState(null);
   const [contents, setContents] = useState(null);
   const [error, setError] = useState(null);
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('token');
 
   const handleFileChange = (e) => {
     if (e.target.files) setFile(e.target.files[0]);
@@ -119,7 +119,7 @@ const Upload = () => {
 
   const readFile = () => {
     const reader = new FileReader();
-    reader.readAsText(file, "UTF-8");
+    reader.readAsText(file, 'UTF-8');
     reader.onload = (e) => {
       const c = e.target.result.split('\n');
       setContents(c);
@@ -137,7 +137,7 @@ const Upload = () => {
         }
       });
       if(response.data.message === 'OK') {
-        navigate("/dashboard");
+        navigate('/dashboard');
       } else {
         if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
@@ -152,7 +152,7 @@ const Upload = () => {
   useEffect(() => {
     if (!token) {
       console.error('Token not found');
-      navigate("/login");
+      navigate('/login');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -167,10 +167,10 @@ const Upload = () => {
             <h1>Upload Log File</h1>
           </Header>
           <ActionBlockDivInner>
-            <InputField type='file' id='file' name='file' placeholder="File" onChange={handleFileChange} />
+            <InputField type='file' id='file' name='file' placeholder='File' onChange={handleFileChange} />
             <OptionButtons>
-              <SubmitButton type='submit' id='submit' name='submit' onClick={uploadLog} value="Upload File!" />
-              <SubmitButton type='submit' id='submit' name='submit' onClick={readFile} value="Read" />
+              <SubmitButton type='submit' id='submit' name='submit' onClick={uploadLog} value='Upload File!' />
+              <SubmitButton type='submit' id='submit' name='submit' onClick={readFile} value='Read' />
             </OptionButtons>
           </ActionBlockDivInner>
           {contents && <FileContents>

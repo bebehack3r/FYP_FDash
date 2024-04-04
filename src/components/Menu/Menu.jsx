@@ -1,6 +1,6 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
 const Wrap = styled.div`
   width: 100vw;
@@ -28,10 +28,10 @@ const NavItem = styled.div`
 const Menu = () => {
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('token');
   if(!token) {
-    console.error("No token found!");
-    navigate("/login");
+    console.error('No token found!');
+    navigate('/login');
     return;
   }
   let base64Url = token.split('.')[1];
@@ -42,32 +42,32 @@ const Menu = () => {
   const { role } = JSON.parse(jsonPayload);
 
   const dashboard = () => {
-    navigate("/dashboard");
+    navigate('/dashboard');
   };
 
   const addAPI = () => {
-    navigate("/api");
+    navigate('/api');
   };
 
   const uploadFile = () => {
-    navigate("/upload");
+    navigate('/upload');
   };
 
   const createAcc = () => {
-    navigate("/register");
+    navigate('/register');
   };
 
   const manageUsers = () => {
-    navigate("/manageUsers");
+    navigate('/manageUsers');
   };
 
   const profile = () => {
-    navigate("/profile");
+    navigate('/profile');
   };
 
   const logOut = () => {
     localStorage.removeItem('token');
-    navigate("/login");
+    navigate('/login');
   };
 
   return(
@@ -76,8 +76,8 @@ const Menu = () => {
       <NavItem onClick={addAPI}>Add API</NavItem>
       <NavItem onClick={uploadFile}>Upload Log</NavItem>
       <NavItem onClick={profile}>Profile</NavItem>
-      { role === "admin" && <NavItem onClick={createAcc}>Create New Account</NavItem> }
-      { role === "admin" && <NavItem onClick={manageUsers}>Manage Users</NavItem> }
+      { role === 'admin' && <NavItem onClick={createAcc}>Create New Account</NavItem> }
+      { role === 'admin' && <NavItem onClick={manageUsers}>Manage Users</NavItem> }
       <NavItem onClick={logOut}>Log Out</NavItem>
     </Wrap>
   );

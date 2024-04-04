@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import styled from "styled-components";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import styled from 'styled-components';
 
-import logo from "./logo.png";
+import logo from './logo.png';
 
 const Wrap = styled.div`
   display: flex;
@@ -87,9 +87,9 @@ const SubmitButton = styled.input`
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [pass, setPass] = useState("");
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [email, setEmail] = useState('');
+  const [pass, setPass] = useState('');
+  const [token, setToken] = useState(localStorage.getItem('token'));
   const [error, setError] = useState(null);
 
   const handleEmail = (e) => {
@@ -105,7 +105,7 @@ const Login = () => {
       const response = await axios.post('http://localhost:8000/login', { email, pass });
       if(response.data.message === 'OK') {
         localStorage.setItem('token', response.data.data);
-        navigate("/dashboard");
+        navigate('/dashboard');
       } else {
         if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
@@ -119,8 +119,8 @@ const Login = () => {
   useEffect(() => {
     if (token) {
       console.error('Token found');
-      navigate("/dashboard");
-    } else setToken(localStorage.getItem("token"));
+      navigate('/dashboard');
+    } else setToken(localStorage.getItem('token'));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -133,10 +133,10 @@ const Login = () => {
           {error && <h3>error</h3>}
           <ActionBlockDivInner>
             <LabelField htmlFor='login'>E-mail</LabelField>
-            <InputField type='text' id='login' name='login' onChange={handleEmail} placeholder="Enter your e-mail" />
+            <InputField type='text' id='login' name='login' onChange={handleEmail} placeholder='Enter your e-mail' />
             <LabelField htmlFor='password'>Password</LabelField>
-            <InputField type='password' id='password' name='password' onChange={handlePass} placeholder="Enter your password" />
-            <SubmitButton type='submit' id='submit' name='submit' onClick={login} value="Log In" />
+            <InputField type='password' id='password' name='password' onChange={handlePass} placeholder='Enter your password' />
+            <SubmitButton type='submit' id='submit' name='submit' onClick={login} value='Log In' />
           </ActionBlockDivInner>
         </ActionBlockDiv>
       </ActionBlock>

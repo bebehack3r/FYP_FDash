@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import styled from "styled-components";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import styled from 'styled-components';
 
-import Menu from "../Menu/Menu.jsx";
+import Menu from '../Menu/Menu.jsx';
 
 const Wrap = styled.div`
   display: flex;
@@ -337,7 +337,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (!token) {
       console.error('No token found');
-      navigate("/login");
+      navigate('/login');
       return;
     }
     if(!logAnalysis) return;
@@ -360,7 +360,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (!token) {
       console.error('No token found');
-      navigate("/login");
+      navigate('/login');
       return;
     }
 
@@ -410,14 +410,14 @@ const Dashboard = () => {
                 <CreateAlertButton onClick={initCreateAlert}>&nbsp;&nbsp;+create</CreateAlertButton>
               </RowBlock>
               { customAlertInit && <>
-                <CustomAlertInput type="text" id="desc" name="desc" placeholder="Describe alert" onChange={handleAlertDesc} />
-                <CustomAlertInput type="text" id="type" name="type" placeholder="Give alert type" onChange={handleAlertType} />
-                <CutomAlertButton type="submit" id="submit" name="submit" onClick={createAlert} value="Create" />
+                <CustomAlertInput type='text' id='desc' name='desc' placeholder='Describe alert' onChange={handleAlertDesc} />
+                <CustomAlertInput type='text' id='type' name='type' placeholder='Give alert type' onChange={handleAlertType} />
+                <CutomAlertButton type='submit' id='submit' name='submit' onClick={createAlert} value='Create' />
               </> }
               { customEditAlertInit && <>
-                <CustomAlertInput type="text" id="desc" name="desc" placeholder="Describe alert" value={customEditAlertDesc} onChange={handleEditAlertDesc} />
-                <CustomAlertInput type="text" id="type" name="type" placeholder="Give alert type" value={customEditAlertType} onChange={handleEditAlertType} />
-                <CutomAlertButton type="submit" id="submit" name="submit" onClick={editAlert} value="Update" />
+                <CustomAlertInput type='text' id='desc' name='desc' placeholder='Describe alert' value={customEditAlertDesc} onChange={handleEditAlertDesc} />
+                <CustomAlertInput type='text' id='type' name='type' placeholder='Give alert type' value={customEditAlertType} onChange={handleEditAlertType} />
+                <CutomAlertButton type='submit' id='submit' name='submit' onClick={editAlert} value='Update' />
               </> }
               { !customThreats && <p>No alerts yet...</p> }
               { customThreats && customThreats.map(t => {

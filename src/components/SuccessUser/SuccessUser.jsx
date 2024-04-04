@@ -1,9 +1,9 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-// import axios from "axios";
-import styled from "styled-components";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+// import axios from 'axios';
+import styled from 'styled-components';
 
-import logo from "./logo.png";
+import logo from './logo.png';
 
 const Wrap = styled.div`
   display: flex;
@@ -59,7 +59,7 @@ const SuccessUser = () => {
   const navigate = useNavigate();
 
   const goBack = () => {
-    navigate("/dashboard");
+    navigate('/dashboard');
   };
 
   return(
@@ -70,7 +70,7 @@ const SuccessUser = () => {
       <ActionBlock>
         <h1>Welcome to Dash!</h1>
         <h3>New User Account has been created. Please, share login and password to log in.</h3>
-        <SubmitButton type='submit' id='submit' name='submit' onClick={goBack} value="Go Back" />
+        <SubmitButton type='submit' id='submit' name='submit' onClick={goBack} value='Go Back' />
       </ActionBlock>
     </Wrap>
   );
