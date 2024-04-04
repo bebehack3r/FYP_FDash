@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
-import headerPromo from "./header_promo.jpg";
-import scrollDown from "./down.gif";
+import plexus from "./145026-785786148.mp4";
 
 const Wrap = styled.div`
   display: flex;
@@ -20,19 +19,6 @@ const Block = styled.div`
   position: relative;
   color: white;
   text-align: center;
-`;
-
-const HeaderPromoImage = styled.img`
-  object-fit: contain;
-  height: 100%;
-`;
-
-const ScrollDownImage = styled.img`
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 200px;
 `;
 
 const Row = styled.div`
@@ -119,8 +105,7 @@ const SubscriptionButton = styled.div`
 `;
 
 const RegisterInput = styled.input`
-  width: 40vw;
-  margin-left: 5vw;
+  width: 24vw;
   margin-top: 10px;
   margin-bottom: 8px;
   font-size: 12pt;
@@ -138,6 +123,7 @@ const Landing = () => {
     try {
       const response = await axios.get('http://localhost:8000/promo_data/');
       if(response.data.message == 'OK') {
+        console.log("fetched");
         setCompanies(response.data.data.companies);
         setThreats(response.data.data.threats);
         setAttacks(response.data.data.attacks);
@@ -149,7 +135,31 @@ const Landing = () => {
       console.error('Error fetching logs:', error);
       setError('Frontend server malfunction. Please, contact your supplier');
     }
-  }
+  };
+
+  const animateIncrement = (e, lim) => {
+    const speed = 200;
+    const data = +e.innerText;
+    const time = lim / speed;
+    if(data < lim) {
+      e.innerText = Math.ceil(data + time);
+      setTimeout(() => { animateIncrement(e, lim) }, 1);
+    } else e.innerText = lim;
+  };
+
+  const checkVisibility = () => {
+    console.log('wow');
+    if(document.getElementById('dynamicBlock').getBoundingClientRect().top < window.innerHeight / 1.2) {
+      console.log(companies);
+      const companiesAmount = document.getElementById("companiesAmnt");
+      const threatsAmount = document.getElementById("threatsAmnt");
+      const attacksAmount = document.getElementById("attacksAmnt");
+      animateIncrement(companiesAmount, companies);
+      animateIncrement(threatsAmount, threats);
+      animateIncrement(attacksAmount, attacks);
+      window.removeEventListener('scroll', checkVisibility);
+    }
+  };
 
   useEffect(() => {
     // ----------------
@@ -158,14 +168,21 @@ const Landing = () => {
     fetchDynamicData();
   }, []);
 
+  useEffect(() => {
+    if(companies != 0) window.addEventListener('scroll', checkVisibility);
+  }, [companies]);
+
   return(
     <Wrap>
-      <Block style={{ background: 'white' }}>
+      <Block style={{ background: 'white', position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
         { 
         // HEADER BLOCK 
         }
-        <HeaderPromoImage src={headerPromo} />
-        <ScrollDownImage src={scrollDown} />
+        <span style={{ zIndex: 999, fontSize: "50pt" }}>Dash</span>
+        <span style={{ zIndex: 999, fontSize: "20pt" }}>Simple Cybersecurity Visualization</span>
+        <video autoPlay loop muted style={{ zIndex: 1, position: "absolute", width: "100%", height: "auto" }}>
+          <source src={plexus} type="video/mp4" />
+        </video>
       </Block>
       <Block>
         { 
@@ -178,19 +195,19 @@ const Landing = () => {
         { 
         // DYNAMIC DATA BLOCK 
         }
-        <div style={{ width: '80%', marginLeft: '10%' }}>
+        <div style={{ width: '80%', marginLeft: '10%' }} id="dynamicBlock">
           <Row>
             <Column>
               <DynamicDescription>Happy Customers</DynamicDescription>
-              <DynamicData>{companies}</DynamicData>
+              <DynamicData id="companiesAmnt">0</DynamicData>
             </Column>
             <Column>
               <DynamicDescription>Identified Threats</DynamicDescription>
-              <DynamicData>{threats}</DynamicData>
+              <DynamicData id="threatsAmnt">0</DynamicData>
             </Column>
             <Column>
               <DynamicDescription>Attacks Prevented</DynamicDescription>
-              <DynamicData>{attacks}</DynamicData>
+              <DynamicData id="attacksAmnt">0</DynamicData>
             </Column>
           </Row>
         </div>
@@ -251,36 +268,42 @@ const Landing = () => {
           </SubscriptionOfferRight>
         </Row>
       </Block>
-      <Block style={{ fontSize: '18pt', height: '80vh', color: 'black', background: 'white', marginTop: '5vh' }}>
+      <Block style={{ fontSize: '18pt', height: '60vh', color: 'black', background: 'white', marginTop: '5vh' }}>
         { 
         // REGISTER BLOCK 
         }
         <h1>Ready to give Dash a try?</h1>
         <form style={{ display: 'flex', marginTop: '30px', flexDirection: 'column', width: '50vw', marginLeft: '25vw', alignItems: 'flex-start', textAlign: 'left' }}>
-          <Column>
-            <label htmlFor="fullName">Full Name: </label>
-            <RegisterInput type="text" name="fullName" placeholder="Full Name" />
-          </Column>
-          <Column>
-            <label htmlFor="fullName">Company Name: </label>
-            <RegisterInput type="text" name="companyName" placeholder="Company Name" />
-          </Column>
-          <Column>
-            <label htmlFor="fullName">How many employees work at your company: </label>
-            <RegisterInput type="text" name="employeesCount" placeholder="Amount of Employees" />
-          </Column>
-          <Column>
-            <label htmlFor="fullName">E-mail: </label>
-            <RegisterInput type="text" name="email" placeholder="E-mail" />
-          </Column>
-          <Column>
-            <label htmlFor="fullName">Password: </label>
-            <RegisterInput type="text" name="password" placeholder="Password" />
-          </Column>
-          <Column>
-            <label htmlFor="fullName">Confirm Password: </label>
-            <RegisterInput type="text" name="passwordConfirm" placeholder="Confirm Password" />
-          </Column>
+          <Row>
+            <Column style={{ marginRight: '30px' }}>
+              <label htmlFor="fullName">Full Name: </label>
+              <RegisterInput type="text" name="fullName" placeholder="Full Name" />
+            </Column>
+            <Column>
+              <label htmlFor="fullName">Company Name: </label>
+              <RegisterInput type="text" name="companyName" placeholder="Company Name" />
+            </Column>
+          </Row>
+          <Row>
+            <Column style={{ marginRight: '30px' }}>
+              <label htmlFor="fullName">Company Size: </label>
+              <RegisterInput type="text" name="employeesCount" placeholder="Amount of Employees" />
+            </Column>
+            <Column>
+              <label htmlFor="fullName">Company E-mail: </label>
+              <RegisterInput type="text" name="email" placeholder="E-mail" />
+            </Column>
+          </Row>
+          <Row>
+            <Column style={{ marginRight: '30px' }}>
+              <label htmlFor="fullName">Password: </label>
+              <RegisterInput type="text" name="password" placeholder="Password" />
+            </Column>
+            <Column>
+              <label htmlFor="fullName">Confirm Password: </label>
+              <RegisterInput type="text" name="passwordConfirm" placeholder="Confirm Password" />
+            </Column>
+          </Row>
           <SubscriptionButton>Join Dash</SubscriptionButton>
         </form>
       </Block>

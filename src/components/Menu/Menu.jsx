@@ -45,6 +45,10 @@ const Menu = () => {
     navigate("/dashboard");
   };
 
+  const addAPI = () => {
+    navigate("/api");
+  };
+
   const uploadFile = () => {
     navigate("/upload");
   };
@@ -69,7 +73,8 @@ const Menu = () => {
   return(
     <Wrap>
       <NavItem onClick={dashboard}>Dashboard</NavItem>
-      <NavItem onClick={uploadFile}>Upload</NavItem>
+      <NavItem onClick={addAPI}>Add API</NavItem>
+      <NavItem onClick={uploadFile}>Upload Log</NavItem>
       <NavItem onClick={profile}>Profile</NavItem>
       { role == "admin" && <NavItem onClick={createAcc}>Create New Account</NavItem> }
       { role == "admin" && <NavItem onClick={manageUsers}>Manage Users</NavItem> }
