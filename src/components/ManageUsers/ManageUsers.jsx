@@ -155,6 +155,8 @@ const ManageUsers = () => {
                     <option value='user' selected={user.role === 'user'}>User</option>
                     <option value='analyst' selected={user.role === 'analyst'}>Analyst</option>
                     <option value='admin' selected={user.role === 'admin'}>Admin</option>
+                    { ['superAdmin', 'gigaAdmin'].includes(user.role) && <option value='superAdmin' selected={user.role === 'superAdmin'}>Super Admin</option> }
+                    { ['superAdmin', 'gigaAdmin'].includes(user.role) && <option value='gigaAdmin' selected={user.role === 'gigaAdmin'}>Giga Admin</option> }
                     <option value='suspended' selected={user.role === 'suspended'}>Suspended</option>
                   </RoleOptions>
                 </UserListCell>
