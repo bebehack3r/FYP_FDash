@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
@@ -113,7 +113,7 @@ const RegisterInput = styled.input`
 `;
 
 const Landing = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [companies, setCompanies] = useState(0);
   const [threats, setThreats] = useState(0);
@@ -122,16 +122,17 @@ const Landing = () => {
   const fetchDynamicData = async () => {
     try {
       const response = await axios.get('http://localhost:8000/promo_data/');
-      if(response.data.message == 'OK') {
+      if(response.data.message === 'OK') {
         console.log("fetched");
         setCompanies(response.data.data.companies);
         setThreats(response.data.data.threats);
         setAttacks(response.data.data.attacks);
       } else {
-        if(response.data.message == 'ERROR') setError(response.data.data);
+        if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
       }
-    } catch (error) {
+    } catch (err) {
+      setError(err);
       console.error('Error fetching logs:', error);
       setError('Frontend server malfunction. Please, contact your supplier');
     }
@@ -166,10 +167,12 @@ const Landing = () => {
     // LOAD DYNAMIC DATA FROM DATABASE
     // ----------------
     fetchDynamicData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if(companies != 0) window.addEventListener('scroll', checkVisibility);
+    if(companies !== 0) window.addEventListener('scroll', checkVisibility);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companies]);
 
   return(

@@ -132,7 +132,7 @@ const Register = () => {
   };
 
   const register = async () => {
-    if(pass != rePass) {
+    if(pass !== rePass) {
       setError("Passwords do not match");
       return;
     }
@@ -142,9 +142,9 @@ const Register = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      if(response.data.message == 'OK') navigate("/successUser");
+      if(response.data.message === 'OK') navigate("/successUser");
       else {
-        if(response.data.message == 'ERROR') setError(response.data.data);
+        if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
       }
     } catch (error) {
@@ -160,8 +160,10 @@ const Register = () => {
   useEffect(() => {
     if (!token) {
       console.error('Token not found');
+      setToken(localStorage.getItem('token'));
       navigate("/login");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return(

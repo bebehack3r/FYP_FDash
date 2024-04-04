@@ -110,13 +110,14 @@ const Api = () => {
           'Content-Type': 'multipart/form-data'
         }
       });
-      if(response.data.message == 'OK') {
+      if(response.data.message === 'OK') {
         navigate("/dashboard");
       } else {
-        if(response.data.message == 'ERROR') setError(response.data.data);
+        if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
       }
-    } catch (error) {
+    } catch (err) {
+      setError(err);
       console.error('Error fetching request:', error);
       setError('Frontend server malfunction. Please, contact your supplier');
     }
@@ -127,6 +128,7 @@ const Api = () => {
       console.error('Token not found');
       navigate("/login");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return(

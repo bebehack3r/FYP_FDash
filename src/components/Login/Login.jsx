@@ -103,11 +103,11 @@ const Login = () => {
   const login = async () => {
     try {
       const response = await axios.post('http://localhost:8000/login', { email, pass });
-      if(response.data.message == 'OK') {
+      if(response.data.message === 'OK') {
         localStorage.setItem('token', response.data.data);
         navigate("/dashboard");
       } else {
-        if(response.data.message == 'ERROR') setError(response.data.data);
+        if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
       }
     } catch (error) {
@@ -120,7 +120,8 @@ const Login = () => {
     if (token) {
       console.error('Token found');
       navigate("/dashboard");
-    }
+    } else setToken(localStorage.getItem("token"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return(

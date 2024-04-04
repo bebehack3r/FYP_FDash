@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -76,8 +76,8 @@ const Menu = () => {
       <NavItem onClick={addAPI}>Add API</NavItem>
       <NavItem onClick={uploadFile}>Upload Log</NavItem>
       <NavItem onClick={profile}>Profile</NavItem>
-      { role == "admin" && <NavItem onClick={createAcc}>Create New Account</NavItem> }
-      { role == "admin" && <NavItem onClick={manageUsers}>Manage Users</NavItem> }
+      { role === "admin" && <NavItem onClick={createAcc}>Create New Account</NavItem> }
+      { role === "admin" && <NavItem onClick={manageUsers}>Manage Users</NavItem> }
       <NavItem onClick={logOut}>Log Out</NavItem>
     </Wrap>
   );

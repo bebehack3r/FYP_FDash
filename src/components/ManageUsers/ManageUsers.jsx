@@ -77,10 +77,10 @@ const ManageUsers = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      if(response.data.message == 'OK') {
+      if(response.data.message === 'OK') {
         window.location.reload(false);
       } else {
-        if(response.data.message == 'ERROR') setError(response.data.data);
+        if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
       }
     } catch (error) {
@@ -96,10 +96,10 @@ const ManageUsers = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      if(response.data.message == 'OK') {
+      if(response.data.message === 'OK') {
         window.location.reload(false);
       } else {
-        if(response.data.message == 'ERROR') setError(response.data.data);
+        if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
       }
     } catch (error) {
@@ -113,7 +113,6 @@ const ManageUsers = () => {
       console.error('No token found');
       return;
     }
-
     const fetchUsers = async () => {
       try {
         const response = await axios.get('http://localhost:8000/list_users', {
@@ -121,9 +120,9 @@ const ManageUsers = () => {
             Authorization: `Bearer ${token}`
           }
         });
-        if(response.data.message == 'OK') setUsers(response.data.data);
+        if(response.data.message === 'OK') setUsers(response.data.data);
         else {
-          if(response.data.message == 'ERROR') setError(response.data.data);
+          if(response.data.message === 'ERROR') setError(response.data.data);
           else setError('Backend server malfunction. Please, contact your supplier');
         }
       } catch (error) {
@@ -131,8 +130,8 @@ const ManageUsers = () => {
         setError('Frontend server malfunction. Please, contact your supplier');
       }
     };
-
     fetchUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return(
@@ -153,10 +152,10 @@ const ManageUsers = () => {
                 <UserListCell>{user.email}</UserListCell>
                 <UserListCell>
                   <RoleOptions name="role" id="role" onChange={(e) => { handleRoleSwitch(user.id, e.target.value) }}>
-                    <option value="user" selected={user.role == "user"}>User</option>
-                    <option value="analyst" selected={user.role == "analyst"}>Analyst</option>
-                    <option value="admin" selected={user.role == "admin"}>Admin</option>
-                    <option value="suspended" selected={user.role == "suspended"}>Suspended</option>
+                    <option value="user" selected={user.role === "user"}>User</option>
+                    <option value="analyst" selected={user.role === "analyst"}>Analyst</option>
+                    <option value="admin" selected={user.role === "admin"}>Admin</option>
+                    <option value="suspended" selected={user.role === "suspended"}>Suspended</option>
                   </RoleOptions>
                 </UserListCell>
                 <UserListCellAction onClick={()=>{suspendUser(user.id)}}>Suspend!</UserListCellAction>

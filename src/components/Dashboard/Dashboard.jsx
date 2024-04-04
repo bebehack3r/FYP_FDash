@@ -168,10 +168,10 @@ const Dashboard = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      if(response.data.message == 'OK') {
+      if(response.data.message === 'OK') {
         setLogAnalysis(response.data.data);
       } else {
-        if(response.data.message == 'ERROR') setError(response.data.data);
+        if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
       }
     } catch (error) {
@@ -187,10 +187,10 @@ const Dashboard = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      if(response.data.message == 'OK') {
+      if(response.data.message === 'OK') {
         setCustomThreats(response.data.data);
       } else {
-        if(response.data.message == 'ERROR') setError(response.data.data);
+        if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
       }
     } catch (error) {
@@ -207,12 +207,12 @@ const Dashboard = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      if(response.data.message == 'OK') {
+      if(response.data.message === 'OK') {
         setLogContent(response.data.data);
         fetchAlerts(id);
         analyzeLog(id);
       } else {
-        if(response.data.message == 'ERROR') setError(response.data.data);
+        if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
       }
     } catch (error) {
@@ -228,10 +228,10 @@ const Dashboard = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      if(response.data.message == 'OK') {
+      if(response.data.message === 'OK') {
         window.location.reload(false);
       } else {
-        if(response.data.message == 'ERROR') setError(response.data.data);
+        if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
       }
     } catch (error) {
@@ -255,10 +255,10 @@ const Dashboard = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      if(response.data.message == 'OK') {
+      if(response.data.message === 'OK') {
         window.location.reload(false);
       } else {
-        if(response.data.message == 'ERROR') setError(response.data.data);
+        if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
       }
     } catch (error) {
@@ -274,10 +274,10 @@ const Dashboard = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      if(response.data.message == 'OK') {
+      if(response.data.message === 'OK') {
         window.location.reload(false);
       } else {
-        if(response.data.message == 'ERROR') setError(response.data.data);
+        if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
       }
     } catch (error) {
@@ -322,10 +322,10 @@ const Dashboard = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      if(response.data.message == 'OK') {
+      if(response.data.message === 'OK') {
         window.location.reload(false);
       } else {
-        if(response.data.message == 'ERROR') setError(response.data.data);
+        if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
       }
     } catch (error) {
@@ -341,17 +341,20 @@ const Dashboard = () => {
       return;
     }
     if(!logAnalysis) return;
-    if(logAnalysis.length == 0) return setSimpleThreats(null);
+    if(logAnalysis.length === 0) return setSimpleThreats(null);
     const threats = logAnalysis.map(e => {
-      if(e.type == 'sus') {
+      if(e.type === 'sus') {
         return { text: `Suspicious Activity at line ${e.number}`, line: e.number };
-      } else if(e.type == 'scan') {
+      } else if(e.type === 'scan') {
         return { text: `Scan Activity at line ${e.number}`, line: e.number };
-      } else if(e.type == 'policy') {
+      } else if(e.type === 'policy') {
+        return { text: `Custom Policy Violation at line ${e.number}`, line: e.number };
+      } else {
         return { text: `Custom Policy Violation at line ${e.number}`, line: e.number };
       }
     });
     setSimpleThreats(threats);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [logAnalysis]);
 
   useEffect(() => {
@@ -368,9 +371,9 @@ const Dashboard = () => {
             Authorization: `Bearer ${token}`
           }
         });
-        if(response.data.message == 'OK') setLogs(response.data.data);
+        if(response.data.message === 'OK') setLogs(response.data.data);
         else {
-          if(response.data.message == 'ERROR') setError(response.data.data);
+          if(response.data.message === 'ERROR') setError(response.data.data);
           else setError('Backend server malfunction. Please, contact your supplier');
         }
       } catch (error) {
@@ -380,6 +383,7 @@ const Dashboard = () => {
     };
 
     fetchLogs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return(

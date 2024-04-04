@@ -141,12 +141,13 @@ const Profile = () => {
           Authorization: `Bearer ${token}`
         } 
       });
-      if(response.data.message == 'OK') navigate("/profile");
+      if(response.data.message === 'OK') navigate("/profile");
       else {
-        if(response.data.message == 'ERROR') setError(response.data.data);
+        if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
       }
-    } catch (error) {
+    } catch (err) {
+      setError(err);
       console.error('Error fetching logs:', error);
       setError('Frontend server malfunction. Please, contact your supplier');
     }
@@ -159,6 +160,7 @@ const Profile = () => {
   useEffect(() => {
     if (!token) {
       console.error('Token not found');
+      setToken(localStorage.getItem('token'));
       navigate("/login");
     }
 
@@ -177,13 +179,13 @@ const Profile = () => {
             Authorization: `Bearer ${token}`
           }
         });
-        if(response.data.message == 'OK') {
+        if(response.data.message === 'OK') {
           setName(response.data.data.name);
           setEmail(response.data.data.email);
           setPass(response.data.data.pass);
           setRole(response.data.data.role);
         } else {
-          if(response.data.message == 'ERROR') setError(response.data.data);
+          if(response.data.message === 'ERROR') setError(response.data.data);
           else setError('Backend server malfunction. Please, contact your supplier');
         }
       } catch (error) {
@@ -192,6 +194,7 @@ const Profile = () => {
       }
     }
     loadProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return(
