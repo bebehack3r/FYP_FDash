@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import axios from 'axios';
 import styled from 'styled-components';
+import ipLocation from 'iplocation';
+
+import 'leaflet/dist/leaflet.css'
+import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
+import "leaflet-defaulticon-compatibility";
 
 import Menu from '../Menu/Menu.jsx';
 
@@ -93,7 +99,7 @@ const CreateAlertButton = styled.h3`
 `;
 
 const Contentsblock = styled.div`
-  width: 64%;
+  width: 98%;
   margin-left: 2%;
 `;
 
@@ -105,7 +111,7 @@ const FileContent = styled.pre`
   padding-bottom: 15px;
   background: black;
   overflow: scroll;
-  height: 60vh;
+  height: 40vh;
 `;
 
 const CustomAlertInput = styled.input`
@@ -141,6 +147,12 @@ const CustomAlertEdit = styled.span`
   }
 `;
 
+const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 64%;
+`;
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const [logs, setLogs] = useState([]);
@@ -157,6 +169,7 @@ const Dashboard = () => {
   const [customEditAlertDesc, setCustomEditAlertDesc] = useState(null);
   const [customEditAlertDate, setCustomEditAlertDate] = useState(null);
   const [customEditAlertType, setCustomEditAlertType] = useState(null);
+  const [customPins, setCustomPins] = useState(null);
   const [error, setError] = useState(null);
 
   const token = localStorage.getItem('token');
@@ -343,18 +356,52 @@ const Dashboard = () => {
     if(!logAnalysis) return;
     if(logAnalysis.length === 0) return setSimpleThreats(null);
     const threats = logAnalysis.map(e => {
-      if(e.type === 'sus') {
-        return { text: `Suspicious Activity at line ${e.number}`, line: e.number };
-      } else if(e.type === 'scan') {
-        return { text: `Scan Activity at line ${e.number}`, line: e.number };
-      } else if(e.type === 'policy') {
-        return { text: `Custom Policy Violation at line ${e.number}`, line: e.number };
+      if(e.threatType === 'sus') {
+        return { text: `Suspicious Activity at line ${e.lineNumber}`, line: e.lineNumber };
+      } else if(e.threatType === 'scan') {
+        return { text: `Scan Activity at line ${e.lineNumber}`, line: e.lineNumber };
+      } else if(e.threatType === 'policy') {
+        return { text: `Custom Policy Violation at line ${e.lineNumber}`, line: e.lineNumber };
       } else {
-        return { text: `Custom Policy Violation at line ${e.number}`, line: e.number };
+        return { text: `Custom Policy Violation at line ${e.lineNumber}`, line: e.lineNumber };
       }
     });
     setSimpleThreats(threats);
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [logAnalysis]);
+
+  const filterIPs = (lines) => {
+    const arr = [];
+    lines.forEach(line => {
+      const ipReg = /\} (.*) \-\>/;
+      const ipAddr = line.match(ipReg);
+      arr.push(ipAddr[1]);
+    });
+    return [...new Set(arr)];
+  };
+
+  const fetchLocation = async (source) => {
+    try {
+      const location = await ipLocation(source.split(':')[0]);
+      // const location = await ipLocation('112.199.149.55');
+      if(location.latitude) {
+        const position = [location.latitude, location.longitude];
+        return(<Marker position={position} />);
+      }
+      return null;
+    } catch(err) {
+      console.log(err);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    if(!logAnalysis || !logAnalysis.length) return;
+    const unique = filterIPs(logAnalysis.map(threat => threat.sourceLine));
+    const pins = unique.map(addr => fetchLocation(addr)).filter(n => n);
+    Promise.all(pins).then((values) => {
+      setCustomPins(values);
+    });
   }, [logAnalysis]);
 
   useEffect(() => {
@@ -434,10 +481,19 @@ const Dashboard = () => {
               { simpleThreats && simpleThreats.map(t => <p key={t.line}>{t.text}</p>)}
             </Miniblock>
           </Mini>
-          <Contentsblock>
-            <h1>Contents:</h1>
-            { logContent && <FileContent>{logContent}</FileContent>}
-          </Contentsblock></> }
+          <Column>
+            <Contentsblock>
+              <h1>Contents:</h1>
+              { logContent && <FileContent>{logContent}</FileContent>}
+            </Contentsblock>
+            <MapContainer style={{ width: '98%', height: '40vh', marginLeft: '2%', marginBottom: '20px' }} center={[30,30]} zoom={2} scrollWheelZoom={false}>
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              { customPins && customPins }
+            </MapContainer>
+          </Column></>}
         </RightSide>
       </Workstage>
     </Wrap>
