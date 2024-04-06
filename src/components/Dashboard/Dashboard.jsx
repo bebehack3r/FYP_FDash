@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import axios from 'axios';
 import styled from 'styled-components';
-import ipLocation from 'iplocation';
 
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
@@ -357,51 +356,17 @@ const Dashboard = () => {
     if(logAnalysis.length === 0) return setSimpleThreats(null);
     const threats = logAnalysis.map(e => {
       if(e.threatType === 'sus') {
-        return { text: `Suspicious Activity at line ${e.lineNumber}`, line: e.lineNumber };
+        return { text: `Suspicious Activity at line ${e.lineNumber}`, line: e.lineNumber, location: e.ipLocation, address: e.ipAddress };
       } else if(e.threatType === 'scan') {
-        return { text: `Scan Activity at line ${e.lineNumber}`, line: e.lineNumber };
+        return { text: `Scan Activity at line ${e.lineNumber}`, line: e.lineNumber, location: e.ipLocation, address: e.ipAddress };
       } else if(e.threatType === 'policy') {
-        return { text: `Custom Policy Violation at line ${e.lineNumber}`, line: e.lineNumber };
+        return { text: `Custom Policy Violation at line ${e.lineNumber}`, line: e.lineNumber, location: e.ipLocation, address: e.ipAddress };
       } else {
-        return { text: `Custom Policy Violation at line ${e.lineNumber}`, line: e.lineNumber };
+        return { text: `Custom Policy Violation at line ${e.lineNumber}`, line: e.lineNumber, location: e.ipLocation, address: e.ipAddress };
       }
     });
     setSimpleThreats(threats);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [logAnalysis]);
-
-  const filterIPs = (lines) => {
-    const arr = [];
-    lines.forEach(line => {
-      const ipReg = /\} (.*) \-\>/;
-      const ipAddr = line.match(ipReg);
-      arr.push(ipAddr[1]);
-    });
-    return [...new Set(arr)];
-  };
-
-  const fetchLocation = async (source) => {
-    try {
-      const location = await ipLocation(source.split(':')[0]);
-      // const location = await ipLocation('112.199.149.55');
-      if(location.latitude) {
-        const position = [location.latitude, location.longitude];
-        return(<Marker position={position} />);
-      }
-      return null;
-    } catch(err) {
-      console.log(err);
-      return null;
-    }
-  };
-
-  useEffect(() => {
-    if(!logAnalysis || !logAnalysis.length) return;
-    const unique = filterIPs(logAnalysis.map(threat => threat.sourceLine));
-    const pins = unique.map(addr => fetchLocation(addr)).filter(n => n);
-    Promise.all(pins).then((values) => {
-      setCustomPins(values);
-    });
   }, [logAnalysis]);
 
   useEffect(() => {
@@ -410,7 +375,6 @@ const Dashboard = () => {
       navigate('/login');
       return;
     }
-
     const fetchLogs = async () => {
       try {
         const response = await axios.get('http://localhost:8000/list_logs', {
@@ -491,7 +455,7 @@ const Dashboard = () => {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              { customPins && customPins }
+              { simpleThreats && simpleThreats.map(t => t.ipLocation && <Marker position={t.ipLocation} />) }
             </MapContainer>
           </Column></>}
         </RightSide>
