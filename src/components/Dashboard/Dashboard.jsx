@@ -155,9 +155,13 @@ const Column = styled.div`
 const Dashboard = () => {
   const navigate = useNavigate();
   const [logs, setLogs] = useState([]);
+  const [APIs, setAPIs] = useState([]);
   const [logID, setLogID] = useState(null);
+  const [APIID, setAPIID] = useState(null);
   const [logContent, setLogContent] = useState(null);
+  const [APIContent, setAPIContent] = useState(null);
   const [logAnalysis, setLogAnalysis] = useState(null);
+  const [APIAnalysis, setAPIAnalysis] = useState(null);
   const [simpleThreats, setSimpleThreats] = useState(null);
   const [customThreats, setCustomThreats] = useState(null);
   const [customAlertInit, setCustomAlertInit] = useState(false);
@@ -190,7 +194,27 @@ const Dashboard = () => {
       console.error('Error fetching logs:', error);
       setError('Frontend server malfunction. Please, contact your supplier');
     }
-  }
+  };
+
+  const analyzeAPI = async (id) => {
+    try {
+      const response = await axios.post('http://localhost:8000/analyze_endpoint/', { id }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if(response.data.message === 'OK') {
+        console.log(response.data.data);
+        setAPIAnalysis(response.data.data);
+      } else {
+        if(response.data.message === 'ERROR') setError(response.data.data);
+        else setError('Backend server malfunction. Please, contact your supplier');
+      }
+    } catch (error) {
+      console.error('Error fetching logs:', error);
+      setError('Frontend server malfunction. Please, contact your supplier');
+    }
+  };
 
   const fetchAlerts = async (id) => {
     try {
@@ -212,6 +236,7 @@ const Dashboard = () => {
   };
 
   const viewMore = async (id) => {
+    setAPIContent(null);
     setLogID(id);
     try {
       const response = await axios.get(`http://localhost:8000/get_log/${id}`, {
@@ -233,9 +258,50 @@ const Dashboard = () => {
     }
   };
 
+  const viewMoreAPI = async (id) => {
+    setLogContent(null);
+    setAPIID(id);
+    try {
+      const response = await axios.get(`http://localhost:8000/get_endpoint/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if(response.data.message === 'OK') {
+        setAPIContent(response.data.data);
+        analyzeAPI(id);
+      } else {
+        if(response.data.message === 'ERROR') setError(response.data.data);
+        else setError('Backend server malfunction. Please, contact your supplier');
+      }
+    } catch (error) {
+      console.error('Error fetching logs:', error);
+      setError('Frontend server malfunction. Please, contact your supplier');
+    }
+  };
+
   const removeLog = async (id) => {
     try {
       const response = await axios.post('http://localhost:8000/remove_log/', { id }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if(response.data.message === 'OK') {
+        window.location.reload(false);
+      } else {
+        if(response.data.message === 'ERROR') setError(response.data.data);
+        else setError('Backend server malfunction. Please, contact your supplier');
+      }
+    } catch (error) {
+      console.error('Error fetching logs:', error);
+      setError('Frontend server malfunction. Please, contact your supplier');
+    }
+  };
+
+  const removeAPI = async (id) => {
+    try {
+      const response = await axios.post('http://localhost:8000/remove_endpoint/', { id }, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -392,8 +458,26 @@ const Dashboard = () => {
         setError('Frontend server malfunction. Please, contact your supplier');
       }
     };
+    const fetchAPIs = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/list_endpoints', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        if(response.data.message === 'OK') setAPIs(response.data.data);
+        else {
+          if(response.data.message === 'ERROR') setError(response.data.data);
+          else setError('Backend server malfunction. Please, contact your supplier');
+        }
+      } catch (error) {
+        console.log(error);
+        setError('Frontend server malfunction. Please, contact your supplier');
+      }
+    };
 
     fetchLogs();
+    fetchAPIs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -410,8 +494,14 @@ const Dashboard = () => {
               <LogLink onClick={()=>{viewMore(log.id)}}>{log.fname}</LogLink>
             </LogsListEntry>
           ))}
+          {APIs.map(api => (
+            <LogsListEntry key={api.id}>
+              <RemoveLog onClick={()=>{removeAPI(api.id)}}>❌</RemoveLog>
+              <LogLink onClick={()=>{viewMoreAPI(api.id)}}>{api.url.split('://').reverse()[0]}</LogLink>
+            </LogsListEntry>
+          ))}
         </>}
-        {error && <p>error</p>}
+        {error && <p>{error}</p>}
         </LogsList>
         <RightSide>
           {logContent && <><Mini>
@@ -457,6 +547,43 @@ const Dashboard = () => {
               />
               { simpleThreats && simpleThreats.map(t => t.ipLocation && <Marker position={t.ipLocation} />) }
             </MapContainer>
+          </Column></>}
+          {APIContent && <><Mini>
+            <Miniblock>
+              <RowBlock>
+                <h1>Alerts:</h1>
+                {/* <CreateAlertButton onClick={initCreateAlert}>&nbsp;&nbsp;+create</CreateAlertButton> */}
+              </RowBlock>
+              {/* { customAlertInit && <>
+                <CustomAlertInput type='text' id='desc' name='desc' placeholder='Describe alert' onChange={handleAlertDesc} />
+                <CustomAlertInput type='text' id='type' name='type' placeholder='Give alert type' onChange={handleAlertType} />
+                <CutomAlertButton type='submit' id='submit' name='submit' onClick={createAlert} value='Create' />
+              </> }
+              { customEditAlertInit && <>
+                <CustomAlertInput type='text' id='desc' name='desc' placeholder='Describe alert' value={customEditAlertDesc} onChange={handleEditAlertDesc} />
+                <CustomAlertInput type='text' id='type' name='type' placeholder='Give alert type' value={customEditAlertType} onChange={handleEditAlertType} />
+                <CutomAlertButton type='submit' id='submit' name='submit' onClick={editAlert} value='Update' />
+              </> } */}
+              {/* { !customThreats && <p>No alerts yet...</p> }
+              { customThreats && customThreats.map(t => {
+                return <p key={t.id}>
+                  <CustomAlertEdit onClick={()=>{removeAlert(t.id)}}>❌&nbsp;&nbsp;</CustomAlertEdit>
+                  <CustomAlertEdit onClick={() => { editAlertInit(t); }}>✏️&nbsp;&nbsp;</CustomAlertEdit> 
+                  @{t.type}: {t.description}
+                </p>
+              })} */}
+            </Miniblock>
+            <Miniblock>
+              <h1>Threats:</h1>
+              { APIAnalysis && !APIAnalysis.alerts && <p>No threats yet...</p> }
+              { APIAnalysis && APIAnalysis.alerts && APIAnalysis.alerts.map(t => <p>{t.sourceLine}</p>)}
+            </Miniblock>
+          </Mini>
+          <Column>
+            <Contentsblock>
+              <h1>Fetched from {APIContent && APIContent.url.split('://').reverse()[0]}</h1>
+              { APIAnalysis && <FileContent>{APIAnalysis.contents}</FileContent>}
+            </Contentsblock>
           </Column></>}
         </RightSide>
       </Workstage>

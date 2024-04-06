@@ -99,15 +99,14 @@ const Api = () => {
   const token = localStorage.getItem('token');
 
   const handleAPIChange = (e) => {
-    if (e.target.files) setURL(e.target.files[0]);
+    setURL(e.target.value);
   };
 
   const addAPI = async () => {
     try {
       const response = await axios.post('http://localhost:8000/add_endpoint', { url }, {
         headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
+          Authorization: `Bearer ${token}`
         }
       });
       if(response.data.message === 'OK') {
