@@ -6,9 +6,12 @@ import styled from 'styled-components';
 
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
-import "leaflet-defaulticon-compatibility";
+import 'leaflet-defaulticon-compatibility';
 
 import Menu from '../Menu/Menu.jsx';
+
+import APIs from './APIs/APIs.jsx';
+import Logs from './Logs/Logs.jsx';
 
 const Wrap = styled.div`
   display: flex;
@@ -21,6 +24,10 @@ const Workstage = styled.div`
   flex: 1;
   flex-direction: row;
   margin-bottom: 50px;
+`;
+
+const AutoAlertItem = styled.div`
+  margin-bottom: 14px;
 `;
 
 const LogsList = styled.div`
@@ -36,31 +43,31 @@ const LogsList = styled.div`
   min-height: 80vh;
 `;
 
-const LogsListTitle = styled.h1`
-  margin-left: 7%;
-`;
+// const LogsListTitle = styled.h1`
+//   margin-left: 7%;
+// `;
 
-const LogsListEntry = styled.ul`
-  display: flex;
-  flex-direction: row;
-  padding: 0;
-  padding-left: 20px;
-  margin: 0;
-`;
+// const LogsListEntry = styled.ul`
+//   display: flex;
+//   flex-direction: row;
+//   padding: 0;
+//   padding-left: 20px;
+//   margin: 0;
+// `;
 
-const LogLink = styled.p`
-  &:hover {
-    cursor: pointer;
-  }
-`;
+// const LogLink = styled.p`
+//   &:hover {
+//     cursor: pointer;
+//   }
+// `;
 
-const RemoveLog = styled.p`
-  margin-right: 15px;
+// const RemoveLog = styled.p`
+//   margin-right: 15px;
 
-  &:hover {
-    cursor: pointer;
-  }
-`;
+//   &:hover {
+//     cursor: pointer;
+//   }
+// `;
 
 const RightSide = styled.div`
   display: flex;
@@ -154,180 +161,37 @@ const Column = styled.div`
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [logs, setLogs] = useState([]);
-  const [APIs, setAPIs] = useState([]);
-  const [logID, setLogID] = useState(null);
-  const [APIID, setAPIID] = useState(null);
-  const [logContent, setLogContent] = useState(null);
-  const [APIContent, setAPIContent] = useState(null);
-  const [logAnalysis, setLogAnalysis] = useState(null);
-  const [APIAnalysis, setAPIAnalysis] = useState(null);
-  const [simpleThreats, setSimpleThreats] = useState(null);
-  const [customThreats, setCustomThreats] = useState(null);
+
+  const [displayContents, setDisplayContents] = useState(null);
+  const [customAlerts, setCustomAlerts] = useState(null);
   const [customAlertInit, setCustomAlertInit] = useState(false);
-  const [customAlertDesc, setCustomAlertDesc] = useState(null);
+  const [customAlertDescription, setCustomAlertDescription] = useState(null);
   const [customAlertType, setCustomAlertType] = useState(null);
-  const [customEditAlertInit, setCustomEditAlertInit] = useState(false);
-  const [customEditAlertID, setCustomEditAlertID] = useState(null);
-  const [customEditAlertDesc, setCustomEditAlertDesc] = useState(null);
-  const [customEditAlertDate, setCustomEditAlertDate] = useState(null);
-  const [customEditAlertType, setCustomEditAlertType] = useState(null);
-  const [customPins, setCustomPins] = useState(null);
+  const [customAlertFocus, setCustomAlertFocus] = useState(null);
   const [error, setError] = useState(null);
 
   const token = localStorage.getItem('token');
 
-  const analyzeLog = async (id) => {
-    try {
-      const response = await axios.post('http://localhost:8000/analyze_log/', { id }, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      if(response.data.message === 'OK') {
-        setLogAnalysis(response.data.data);
-      } else {
-        if(response.data.message === 'ERROR') setError(response.data.data);
-        else setError('Backend server malfunction. Please, contact your supplier');
-      }
-    } catch (error) {
-      console.error('Error fetching logs:', error);
-      setError('Frontend server malfunction. Please, contact your supplier');
-    }
-  };
-
-  const analyzeAPI = async (id) => {
-    try {
-      const response = await axios.post('http://localhost:8000/analyze_endpoint/', { id }, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      if(response.data.message === 'OK') {
-        console.log(response.data.data);
-        setAPIAnalysis(response.data.data);
-      } else {
-        if(response.data.message === 'ERROR') setError(response.data.data);
-        else setError('Backend server malfunction. Please, contact your supplier');
-      }
-    } catch (error) {
-      console.error('Error fetching logs:', error);
-      setError('Frontend server malfunction. Please, contact your supplier');
-    }
-  };
-
-  const fetchAlerts = async (id) => {
-    try {
-      const response = await axios.get(`http://localhost:8000/list_threat_notifications/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      if(response.data.message === 'OK') {
-        setCustomThreats(response.data.data);
-      } else {
-        if(response.data.message === 'ERROR') setError(response.data.data);
-        else setError('Backend server malfunction. Please, contact your supplier');
-      }
-    } catch (error) {
-      console.error('Error fetching logs:', error);
-      setError('Frontend server malfunction. Please, contact your supplier');
-    }
-  };
-
-  const viewMore = async (id) => {
-    setAPIContent(null);
-    setLogID(id);
-    try {
-      const response = await axios.get(`http://localhost:8000/get_log/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      if(response.data.message === 'OK') {
-        setLogContent(response.data.data);
-        fetchAlerts(id);
-        analyzeLog(id);
-      } else {
-        if(response.data.message === 'ERROR') setError(response.data.data);
-        else setError('Backend server malfunction. Please, contact your supplier');
-      }
-    } catch (error) {
-      console.error('Error fetching logs:', error);
-      setError('Frontend server malfunction. Please, contact your supplier');
-    }
-  };
-
-  const viewMoreAPI = async (id) => {
-    setLogContent(null);
-    setAPIID(id);
-    try {
-      const response = await axios.get(`http://localhost:8000/get_endpoint/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      if(response.data.message === 'OK') {
-        setAPIContent(response.data.data);
-        analyzeAPI(id);
-      } else {
-        if(response.data.message === 'ERROR') setError(response.data.data);
-        else setError('Backend server malfunction. Please, contact your supplier');
-      }
-    } catch (error) {
-      console.error('Error fetching logs:', error);
-      setError('Frontend server malfunction. Please, contact your supplier');
-    }
-  };
-
-  const removeLog = async (id) => {
-    try {
-      const response = await axios.post('http://localhost:8000/remove_log/', { id }, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      if(response.data.message === 'OK') {
-        window.location.reload(false);
-      } else {
-        if(response.data.message === 'ERROR') setError(response.data.data);
-        else setError('Backend server malfunction. Please, contact your supplier');
-      }
-    } catch (error) {
-      console.error('Error fetching logs:', error);
-      setError('Frontend server malfunction. Please, contact your supplier');
-    }
-  };
-
-  const removeAPI = async (id) => {
-    try {
-      const response = await axios.post('http://localhost:8000/remove_endpoint/', { id }, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      if(response.data.message === 'OK') {
-        window.location.reload(false);
-      } else {
-        if(response.data.message === 'ERROR') setError(response.data.data);
-        else setError('Backend server malfunction. Please, contact your supplier');
-      }
-    } catch (error) {
-      console.error('Error fetching logs:', error);
-      setError('Frontend server malfunction. Please, contact your supplier');
-    }
-  };
-
-  const initCreateAlert = () => {
+  const handleCreateCustomAlert = () => {
     setCustomAlertInit(true);
+    setCustomAlertDescription(null);
+    setCustomAlertType(null);
   };
 
-  const createAlert = async () => {
+  const handleCustomAlertDescription = (e) => {
+    setCustomAlertDescription(e.target.value);
+  };
+
+  const handleCustomAlertType = (e) => {
+    setCustomAlertType(e.target.value);
+  };
+
+  const handleCreateCustomAlertSubmit = async () => {
     try {
       const response = await axios.post('http://localhost:8000/create_threat_notification/', {
-        logID: logID, 
+        logID: displayContents.target.id, 
         type: customAlertType,
-        desc: customAlertDesc
+        desc: customAlertDescription
       }, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -345,7 +209,7 @@ const Dashboard = () => {
     }
   };
 
-  const removeAlert = async (id) => {
+  const handleRemoveCustomAlert = async (id) => {
     try {
       const response = await axios.post('http://localhost:8000/remove_threat_notification/', { id }, {
         headers: {
@@ -364,37 +228,21 @@ const Dashboard = () => {
     }
   };
 
-  const handleAlertDesc = (e) => {
-    setCustomAlertDesc(e.target.value);
+  const handleEditCustomAlert = async (id) => {
+    const t = customAlerts.filter(a => a.id === id)[0];
+    setCustomAlertFocus(id);
+    setCustomAlertDescription(t.description);
+    setCustomAlertType(t.type);
+    setCustomAlertInit(true);
   };
 
-  const handleEditAlertDesc = (e) => {
-    setCustomEditAlertDesc(e.target.value);
-  };
-
-  const handleAlertType = (e) => {
-    setCustomAlertType(e.target.value);
-  };
-
-  const handleEditAlertType = (e) => {
-    setCustomEditAlertType(e.target.value);
-  };
-
-  const editAlertInit = (t) => {
-    setCustomEditAlertID(t.id);
-    setCustomEditAlertDesc(t.description);
-    setCustomEditAlertType(t.type);
-    setCustomEditAlertDate(t.date);
-    setCustomEditAlertInit(true);
-  };
-
-  const editAlert = async (id) => {
+  const handleEditCustomAlertSubmit = async () => {
     try {
       const response = await axios.post('http://localhost:8000/update_threat_notification/', {
-        id: customEditAlertID, 
-        type: customEditAlertType,
-        desc: customEditAlertDesc,
-        date: customEditAlertDate
+        id: customAlertFocus, 
+        type: customAlertType,
+        desc: customAlertDescription,
+        date: customAlerts.filter(a => a.id === customAlertFocus)[0].date
       }, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -418,38 +266,21 @@ const Dashboard = () => {
       navigate('/login');
       return;
     }
-    if(!logAnalysis) return;
-    if(logAnalysis.length === 0) return setSimpleThreats(null);
-    const threats = logAnalysis.map(e => {
-      if(e.threatType === 'sus') {
-        return { text: `Suspicious Activity at line ${e.lineNumber}`, line: e.lineNumber, location: e.ipLocation, address: e.ipAddress };
-      } else if(e.threatType === 'scan') {
-        return { text: `Scan Activity at line ${e.lineNumber}`, line: e.lineNumber, location: e.ipLocation, address: e.ipAddress };
-      } else if(e.threatType === 'policy') {
-        return { text: `Custom Policy Violation at line ${e.lineNumber}`, line: e.lineNumber, location: e.ipLocation, address: e.ipAddress };
-      } else {
-        return { text: `Custom Policy Violation at line ${e.lineNumber}`, line: e.lineNumber, location: e.ipLocation, address: e.ipAddress };
-      }
-    });
-    setSimpleThreats(threats);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [logAnalysis]);
+  }, []);
 
   useEffect(() => {
-    if (!token) {
-      console.error('No token found');
-      navigate('/login');
-      return;
-    }
-    const fetchLogs = async () => {
+    if(!displayContents) return;
+    console.log(displayContents.target);
+    const fetchCustomAlerts = async (id) => {
       try {
-        const response = await axios.get('http://localhost:8000/list_logs', {
+        const response = await axios.get(`http://localhost:8000/list_threat_notifications/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
-        if(response.data.message === 'OK') setLogs(response.data.data);
-        else {
+        if(response.data.message === 'OK') {
+          setCustomAlerts(response.data.data);
+        } else {
           if(response.data.message === 'ERROR') setError(response.data.data);
           else setError('Backend server malfunction. Please, contact your supplier');
         }
@@ -458,133 +289,64 @@ const Dashboard = () => {
         setError('Frontend server malfunction. Please, contact your supplier');
       }
     };
-    const fetchAPIs = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/list_endpoints', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        if(response.data.message === 'OK') setAPIs(response.data.data);
-        else {
-          if(response.data.message === 'ERROR') setError(response.data.data);
-          else setError('Backend server malfunction. Please, contact your supplier');
-        }
-      } catch (error) {
-        console.log(error);
-        setError('Frontend server malfunction. Please, contact your supplier');
-      }
-    };
-
-    fetchLogs();
-    fetchAPIs();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    fetchCustomAlerts(displayContents.target.id)
+  }, [displayContents]);
 
   return(
     <Wrap>
       <Menu />
       <Workstage>
         <LogsList>
-        {!error && <>
-          <LogsListTitle>Log Files</LogsListTitle>
-          {logs.map(log => (
-            <LogsListEntry key={log.id}>
-              <RemoveLog onClick={()=>{removeLog(log.id)}}>❌</RemoveLog>
-              <LogLink onClick={()=>{viewMore(log.id)}}>{log.fname}</LogLink>
-            </LogsListEntry>
-          ))}
-          {APIs.map(api => (
-            <LogsListEntry key={api.id}>
-              <RemoveLog onClick={()=>{removeAPI(api.id)}}>❌</RemoveLog>
-              <LogLink onClick={()=>{viewMoreAPI(api.id)}}>{api.url.split('://').reverse()[0]}</LogLink>
-            </LogsListEntry>
-          ))}
-        </>}
+        {!error && <div style={{ width: '90%', marginLeft: '5%' }}>
+          <Logs setDisplayContents={setDisplayContents} />
+          <APIs setDisplayContents={setDisplayContents} />
+        </div>}
         {error && <p>{error}</p>}
         </LogsList>
         <RightSide>
-          {logContent && <><Mini>
+          <Mini>
+            <Miniblock>
+              { displayContents && <h1>Auto Alerts:</h1> }
+              { displayContents && displayContents.alerts.map(a => <AutoAlertItem key={a.id}><span>{a.sourceLine}</span></AutoAlertItem>) }
+            </Miniblock>
             <Miniblock>
               <RowBlock>
-                <h1>Alerts:</h1>
-                <CreateAlertButton onClick={initCreateAlert}>&nbsp;&nbsp;+create</CreateAlertButton>
+                { displayContents && <h1>Custom Alerts:</h1> }
+                { displayContents && <CreateAlertButton onClick={handleCreateCustomAlert}>&nbsp;&nbsp;+create</CreateAlertButton> }
               </RowBlock>
               { customAlertInit && <>
-                <CustomAlertInput type='text' id='desc' name='desc' placeholder='Describe alert' onChange={handleAlertDesc} />
-                <CustomAlertInput type='text' id='type' name='type' placeholder='Give alert type' onChange={handleAlertType} />
-                <CutomAlertButton type='submit' id='submit' name='submit' onClick={createAlert} value='Create' />
+                  <CustomAlertInput type='text' id='desc' name='desc' placeholder='Describe alert' onChange={handleCustomAlertDescription} value={customAlertDescription} />
+                  <CustomAlertInput type='text' id='type' name='type' placeholder='Give alert type' onChange={handleCustomAlertType} value={customAlertType} />
+                  { !customAlertFocus && <CutomAlertButton type='submit' id='submit' name='submit' onClick={handleCreateCustomAlertSubmit} value='Create' /> }
+                  { customAlertFocus && <CutomAlertButton type='submit' id='submit' name='submit' onClick={handleEditCustomAlertSubmit} value='Edit' /> }
               </> }
-              { customEditAlertInit && <>
-                <CustomAlertInput type='text' id='desc' name='desc' placeholder='Describe alert' value={customEditAlertDesc} onChange={handleEditAlertDesc} />
-                <CustomAlertInput type='text' id='type' name='type' placeholder='Give alert type' value={customEditAlertType} onChange={handleEditAlertType} />
-                <CutomAlertButton type='submit' id='submit' name='submit' onClick={editAlert} value='Update' />
-              </> }
-              { !customThreats && <p>No alerts yet...</p> }
-              { customThreats && customThreats.map(t => {
-                return <p key={t.id}>
-                  <CustomAlertEdit onClick={()=>{removeAlert(t.id)}}>❌&nbsp;&nbsp;</CustomAlertEdit>
-                  <CustomAlertEdit onClick={() => { editAlertInit(t); }}>✏️&nbsp;&nbsp;</CustomAlertEdit> 
-                  @{t.type}: {t.description}
-                </p>
-              })}
-            </Miniblock>
-            <Miniblock>
-              <h1>Threats:</h1>
-              { !simpleThreats && <p>No threats yet...</p> }
-              { simpleThreats && simpleThreats.map(t => <p key={t.line}>{t.text}</p>)}
+              { displayContents && !customAlerts && <p>No Custom Threats yet...</p> }
+              { displayContents && customAlerts && customAlerts.map(a => 
+                <AutoAlertItem key={a.id}>
+                  <span>
+                    <CustomAlertEdit onClick={() => { handleRemoveCustomAlert(a.id); }}>❌&nbsp;&nbsp;</CustomAlertEdit>
+                    <CustomAlertEdit onClick={() => { handleEditCustomAlert(a.id); }}>✏️&nbsp;&nbsp;</CustomAlertEdit>
+                    [{a.type}]: {a.description}
+                  </span>
+                </AutoAlertItem>
+              ) }
             </Miniblock>
           </Mini>
           <Column>
             <Contentsblock>
-              <h1>Contents:</h1>
-              { logContent && <FileContent>{logContent}</FileContent>}
+              { displayContents && <h1>Contents:</h1> }
+              { displayContents && <FileContent>{displayContents.source}</FileContent> }
             </Contentsblock>
-            <MapContainer style={{ width: '98%', height: '40vh', marginLeft: '2%', marginBottom: '20px' }} center={[30,30]} zoom={2} scrollWheelZoom={false}>
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-              { simpleThreats && simpleThreats.map(t => t.ipLocation && <Marker position={t.ipLocation} />) }
-            </MapContainer>
-          </Column></>}
-          {APIContent && <><Mini>
-            <Miniblock>
-              <RowBlock>
-                <h1>Alerts:</h1>
-                {/* <CreateAlertButton onClick={initCreateAlert}>&nbsp;&nbsp;+create</CreateAlertButton> */}
-              </RowBlock>
-              {/* { customAlertInit && <>
-                <CustomAlertInput type='text' id='desc' name='desc' placeholder='Describe alert' onChange={handleAlertDesc} />
-                <CustomAlertInput type='text' id='type' name='type' placeholder='Give alert type' onChange={handleAlertType} />
-                <CutomAlertButton type='submit' id='submit' name='submit' onClick={createAlert} value='Create' />
-              </> }
-              { customEditAlertInit && <>
-                <CustomAlertInput type='text' id='desc' name='desc' placeholder='Describe alert' value={customEditAlertDesc} onChange={handleEditAlertDesc} />
-                <CustomAlertInput type='text' id='type' name='type' placeholder='Give alert type' value={customEditAlertType} onChange={handleEditAlertType} />
-                <CutomAlertButton type='submit' id='submit' name='submit' onClick={editAlert} value='Update' />
-              </> } */}
-              {/* { !customThreats && <p>No alerts yet...</p> }
-              { customThreats && customThreats.map(t => {
-                return <p key={t.id}>
-                  <CustomAlertEdit onClick={()=>{removeAlert(t.id)}}>❌&nbsp;&nbsp;</CustomAlertEdit>
-                  <CustomAlertEdit onClick={() => { editAlertInit(t); }}>✏️&nbsp;&nbsp;</CustomAlertEdit> 
-                  @{t.type}: {t.description}
-                </p>
-              })} */}
-            </Miniblock>
-            <Miniblock>
-              <h1>Threats:</h1>
-              { APIAnalysis && !APIAnalysis.alerts && <p>No threats yet...</p> }
-              { APIAnalysis && APIAnalysis.alerts && APIAnalysis.alerts.map(t => <p>{t.sourceLine}</p>)}
-            </Miniblock>
-          </Mini>
-          <Column>
-            <Contentsblock>
-              <h1>Fetched from {APIContent && APIContent.url.split('://').reverse()[0]}</h1>
-              { APIAnalysis && <FileContent>{APIAnalysis.contents}</FileContent>}
-            </Contentsblock>
-          </Column></>}
+            { displayContents &&
+              <>
+                <MapContainer style={{ width: '98%', height: '40vh', marginLeft: '2%', marginBottom: '5px' }} center={[30,30]} zoom={2} scrollWheelZoom={false}>
+                  <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                  { displayContents.alerts.map(a => a.ipLocation && <Marker position={a.ipLocation} />) }
+                </MapContainer>
+                <span style={{ width: '98%', marginLeft: '2%', marginBottom: '20px', color: 'rgba(255,255,255,0.1)' }}>*Should any IP addresses yield a location a pin will appear on the map.</span>
+              </>
+            }
+          </Column>
         </RightSide>
       </Workstage>
     </Wrap>
