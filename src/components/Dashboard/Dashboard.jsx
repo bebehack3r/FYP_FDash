@@ -189,7 +189,7 @@ const Dashboard = () => {
   const handleCreateCustomAlertSubmit = async () => {
     try {
       const response = await axios.post('http://localhost:8000/create_threat_notification/', {
-        logID: displayContents.target.id, 
+        uuid: displayContents.target.uuid, 
         type: customAlertType,
         desc: customAlertDescription
       }, {
@@ -270,10 +270,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     if(!displayContents) return;
-    console.log(displayContents.target);
-    const fetchCustomAlerts = async (id) => {
+    const fetchCustomAlerts = async (uuid) => {
       try {
-        const response = await axios.get(`http://localhost:8000/list_threat_notifications/${id}`, {
+        const response = await axios.get(`http://localhost:8000/list_threat_notifications/${uuid}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -289,7 +288,7 @@ const Dashboard = () => {
         setError('Frontend server malfunction. Please, contact your supplier');
       }
     };
-    fetchCustomAlerts(displayContents.target.id)
+    fetchCustomAlerts(displayContents.target.uuid)
   }, [displayContents]);
 
   return(
@@ -305,10 +304,6 @@ const Dashboard = () => {
         </LogsList>
         <RightSide>
           <Mini>
-            <Miniblock>
-              { displayContents && <h1>Auto Alerts:</h1> }
-              { displayContents && displayContents.alerts.map(a => <AutoAlertItem key={a.id}><span>{a.sourceLine}</span></AutoAlertItem>) }
-            </Miniblock>
             <Miniblock>
               <RowBlock>
                 { displayContents && <h1>Custom Alerts:</h1> }
@@ -330,6 +325,10 @@ const Dashboard = () => {
                   </span>
                 </AutoAlertItem>
               ) }
+            </Miniblock>
+            <Miniblock>
+              { displayContents && <h1>Auto Alerts:</h1> }
+              { displayContents && displayContents.alerts.map(a => <AutoAlertItem key={a.id}><span>{a.sourceLine}</span></AutoAlertItem>) }
             </Miniblock>
           </Mini>
           <Column>
