@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
+
 const Wrap = styled.div`
   width: 100vw;
   height: 70px;

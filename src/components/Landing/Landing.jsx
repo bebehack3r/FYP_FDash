@@ -2,38 +2,8 @@ import React, { useState, useEffect } from 'react';
 // import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
-
+import { Wrap, Block, Row, Column } from '../Styles/styles.js';
 import plexus from './145026-785786148.mp4';
-
-const Wrap = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-`;
-
-const Block = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 60vh;
-  width: 100vw;
-  position: relative;
-  color: white;
-  text-align: center;
-`;
-
-const Row = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  justify-content: center;
-  align-items: space-evenly;
-`;
-
-const Column = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-`;
 
 const DynamicDescription = styled.span`
   font-weight: bold;

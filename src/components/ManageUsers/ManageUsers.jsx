@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-
+import { Wrap } from '../Styles/styles.js';
 import Menu from '../Menu/Menu.jsx';
 
-const Wrap = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-`;
 
 const Workstage = styled.div`
   display: flex;

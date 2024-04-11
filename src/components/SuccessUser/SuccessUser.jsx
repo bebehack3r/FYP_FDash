@@ -4,14 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import logo from './logo.png';
+import { Wrap, Block, Row, Column } from '../Styles/styles.js';
 
-const Wrap = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-`;
 
 const LogoBlock = styled.div`
   display: flex;

@@ -5,14 +5,8 @@ import styled from 'styled-components';
 
 import right from './right.png';
 import logo from './logo.png';
+import { Wrap, Block, Row, Column } from '../Styles/styles.js';
 
-const Wrap = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
 
 const LogoBlock = styled.div`
   display: flex;

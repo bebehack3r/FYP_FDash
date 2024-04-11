@@ -2,18 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
+import { Wrap, Block, Row, Column } from '../Styles/styles.js';
 
 import Menu from '../Menu/Menu.jsx';
 
 import logo from './logo.png';
 
-const Wrap = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
 
 const ActionBlock = styled.div`
   display: flex;

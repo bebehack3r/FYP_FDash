@@ -9,15 +9,9 @@ import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import 'leaflet-defaulticon-compatibility';
 
 import Menu from '../Menu/Menu.jsx';
-
 import APIs from './APIs/APIs.jsx';
 import Logs from './Logs/Logs.jsx';
-
-const Wrap = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-`;
+import { Wrap, Block, Row } from '../Styles/styles.js';
 
 const Workstage = styled.div`
   display: flex;

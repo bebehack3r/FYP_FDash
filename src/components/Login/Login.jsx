@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
+import { Wrap, Block, Row, Column } from '../Styles/styles.js';
+
 
 import logo from './logo.png';
 
-const Wrap = styled.div`
+/*const Wrap = styled.div`
   display: flex;
   flex: 1;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-`;
+`;*/
 
 const LogoBlock = styled.div`
   display: flex;
@@ -125,7 +127,7 @@ const Login = () => {
   }, []);
 
   return(
-    <Wrap>
+    <Wrap >
       <ActionBlock>
         <h1>Welcome to Dash!</h1>
         <h1>Web-based IDS System</h1>
