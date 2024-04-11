@@ -1,12 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { Wrap } from '../Styles/styles.js';
 
-
-const Wrap = styled.div`
+const WrapLogin = styled(Wrap)`
   width: 100vw;
   height: 70px;
-  display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: end;
@@ -74,7 +73,7 @@ const Menu = () => {
   };
 
   return(
-    <Wrap>
+    <WrapLogin>
       <NavItem onClick={dashboard}>Dashboard</NavItem>
       <NavItem onClick={addAPI}>Add API</NavItem>
       <NavItem onClick={uploadFile}>Upload Log</NavItem>
@@ -82,7 +81,7 @@ const Menu = () => {
       { megaRoles.includes(role) && <NavItem onClick={createAcc}>Create New Account</NavItem> }
       { megaRoles.includes(role) && <NavItem onClick={manageUsers}>Manage Users</NavItem> }
       <NavItem onClick={logOut}>Log Out</NavItem>
-    </Wrap>
+    </WrapLogin>
   );
 };
 

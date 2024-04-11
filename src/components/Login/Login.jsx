@@ -7,13 +7,12 @@ import { Wrap, Block, Row, Column } from '../Styles/styles.js';
 
 import logo from './logo.png';
 
-/*const Wrap = styled.div`
-  display: flex;
-  flex: 1;
+const WrapLogin = styled(Wrap)`
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-`;*/
+  justify-content: space-between
+  `;
+
 
 const LogoBlock = styled.div`
   display: flex;
@@ -127,7 +126,7 @@ const Login = () => {
   }, []);
 
   return(
-    <Wrap >
+    <WrapLogin >
       <ActionBlock>
         <h1>Welcome to Dash!</h1>
         <h1>Web-based IDS System</h1>
@@ -145,7 +144,7 @@ const Login = () => {
       <LogoBlock>
         <LogoImage src={logo} />
       </LogoBlock>
-    </Wrap>
+    </WrapLogin>
   );
 };
 

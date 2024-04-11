@@ -7,6 +7,11 @@ import right from './right.png';
 import logo from './logo.png';
 import { Wrap, Block, Row, Column } from '../Styles/styles.js';
 
+const WrapLogin = styled(Wrap)`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
 
 const LogoBlock = styled.div`
   display: flex;
@@ -161,7 +166,7 @@ const Register = () => {
   }, []);
 
   return(
-    <Wrap>
+    <WrapLogin>
       <ActionBlock>
         <ActionBlockDiv>
           <Header>
@@ -188,7 +193,7 @@ const Register = () => {
       <LogoBlock>
         <LogoImage src={right} />
       </LogoBlock>
-    </Wrap>
+    </WrapLogin>
   );
 };
 
