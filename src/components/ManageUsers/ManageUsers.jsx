@@ -72,7 +72,7 @@ const ManageUsers = () => {
 
   const suspendUser = async (id) => {
     try {
-      const response = await axios.post('http://localhost:8000/suspend_user_profile/', { id }, {
+      const response = await axios.post(process.env.REACT_APP_BACKEND_URL + '/suspend_user_profile/', { id }, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -91,7 +91,7 @@ const ManageUsers = () => {
 
   const handleRoleSwitch = async (id, role) => {
     try {
-      const response = await axios.post('http://localhost:8000/update_user_role/', { id, role }, {
+      const response = await axios.post(process.env.REACT_APP_BACKEND_URL + '/update_user_role/', { id, role }, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -115,7 +115,7 @@ const ManageUsers = () => {
     }
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/list_users', {
+        const response = await axios.get(process.env.REACT_APP_BACKEND_URL + '/list_users', {
           headers: {
             Authorization: `Bearer ${token}`
           }

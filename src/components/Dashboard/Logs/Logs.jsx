@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import styled from 'styled-components';
 import axios from 'axios';
+
+import 'leaflet/dist/leaflet.css'
+import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
+import 'leaflet-defaulticon-compatibility';
 
 const Block = styled.div`
   display: flex;
@@ -17,18 +22,55 @@ const ActiveSpan = styled.span`
   cursor: pointer;
 `;
 
-const Logs = ({ setDisplayContents }) => {
+const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Table = styled.table`
+  border: 1px solid white;
+  border-collapse: collapse;
+`;
+
+const TableRow = styled.tr`
+  width: 100%;
+`;
+
+const TableCell = styled.td`
+  padding: 8px 15px;
+  border: 1px solid white;
+  border-collapse: collapse;
+`;
+
+const TableHeader = styled(TableCell)`
+  background: #2D2828;
+  font-weight: bold;
+`;
+
+const FileContent = styled.pre`
+  width: 96%;
+  margin: 0;
+  padding-left: 2%;
+  padding-right: 2%;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  background: black;
+  overflow: scroll;
+  height: 40vh;
+`;
+
+const Logs = ({ setDisplayContents, token }) => {
   const [error, setError] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token'));
-  const [Logs, setLogs] = useState(null);
+  const [logs, setLogs] = useState(null);
   const [focusedLog, setFocusedLog] = useState(null);
   const [contentsLog, setContentsLog] = useState(null);
-  // const [alertsAPI, setAlertsAPI] = useState(null);
+  const [autoAlertsLog, setAutoAlertsLog] = useState(null);
+  const [customAlertsLog, setCustomAlertsLog] = useState(null);
 
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/list_logs', {
+        const response = await axios.get(process.env.REACT_APP_BACKEND_URL + '/list_logs', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -48,15 +90,16 @@ const Logs = ({ setDisplayContents }) => {
 
   useEffect(() => {
     if(!focusedLog) return;
-    const fetchLogContents = async (id) => {
+    const analyzeLog = async (id) => {
       try {
-        const response = await axios.get(`http://localhost:8000/get_log/${id}`, {
+        const response = await axios.post(process.env.REACT_APP_BACKEND_URL + '/analyze_log/', { id }, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
         if(response.data.message === 'OK') {
-          setContentsLog(response.data.data);
+          setContentsLog(response.data.data.contents);
+          setAutoAlertsLog(response.data.data.alerts);
         } else {
           if(response.data.message === 'ERROR') setError(response.data.data);
           else setError('Backend server malfunction. Please, contact your supplier');
@@ -66,49 +109,121 @@ const Logs = ({ setDisplayContents }) => {
         setError('Frontend server malfunction. Please, contact your supplier');
       }
     };
-    fetchLogContents(focusedLog.id);
-  }, [focusedLog]);
-
-  useEffect(() => {
-    if(!contentsLog || !focusedLog) return;
-    const analyzeLog = async (id) => {
+    const fetchCustomAlerts = async (uuid) => {
       try {
-        const response = await axios.post('http://localhost:8000/analyze_log/', { id }, {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/list_threat_notifications/${uuid}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
         if(response.data.message === 'OK') {
-          setDisplayContents({ alerts: response.data.data, source: contentsLog, target: focusedLog });
-          setContentsLog(null);
-          setFocusedLog(null);
+          setCustomAlertsLog(response.data.data);
         } else {
           if(response.data.message === 'ERROR') setError(response.data.data);
           else setError('Backend server malfunction. Please, contact your supplier');
         }
       } catch (error) {
-        console.error('Error fetching logs:', error);
+        console.error('Error fetching custom alert for log:', error);
         setError('Frontend server malfunction. Please, contact your supplier');
       }
     };
     analyzeLog(focusedLog.id);
-  }, [contentsLog]);
+    fetchCustomAlerts(focusedLog.uuid);
+  }, [focusedLog]);
 
-  // useEffect(() => {
-  //   if(!focusedLog || !contentsAPI || !alertsAPI) return;
-  //   console.log(focusedLog);
-  //   console.log(contentsAPI);
-  //   console.log(alertsAPI);
-  // }, [focusedLog, contentsAPI, alertsAPI]);
+  useEffect(() => {
+    if(!contentsLog || !autoAlertsLog || !customAlertsLog) return;
+    const formCustomAlertsTable = (arr) => {
+      return(
+        <Column>
+          <h2>Custom Alerts:</h2>
+          <Table>
+            <TableRow>
+              <TableHeader>Type</TableHeader>
+              <TableHeader>Description</TableHeader>
+            </TableRow>
+            { 
+              arr.map(a => {
+                return(
+                  <TableRow key={ a.id}>
+                    <TableCell>{ a.type }</TableCell>
+                    <TableCell>{ a.description }</TableCell>
+                  </TableRow>
+                );
+              })
+            }
+          </Table>
+        </Column>
+      );
+    };
+    const formAutoAlertsTable = (arr) => {
+      return(
+        <Column>
+          <h2>Detected Alerts:</h2>
+          <Table>
+            <TableRow>
+              <TableHeader>Type</TableHeader>
+              <TableHeader>Description</TableHeader>
+              <TableHeader>Source IP</TableHeader>
+              <TableHeader>Destination IP</TableHeader>
+            </TableRow>
+            { 
+              arr.map(a => {
+                return(
+                  <TableRow key={ a.lineNumber}>
+                    <TableCell>{ a.threatType }</TableCell>
+                    <TableCell>{ a.sourceLine }</TableCell>
+                    <TableCell>{ a.ipAddress }</TableCell>
+                    <TableCell>{ a.destinationIPAddress }</TableCell>
+                  </TableRow>
+                );
+              })
+            }
+          </Table>
+        </Column>
+      );
+    };
+    const formSourceBlock = (sources) => {
+      return(
+        <Column>
+          <h2>Contents:</h2>
+          <FileContent>
+            {sources}
+          </FileContent>
+        </Column>
+      );
+    };
+    const formActivityMap = (arr) => {
+      return(
+        <Column>
+          <h2>Activity Map:</h2>
+          <MapContainer style={{ width: '100%', height: '50vh', marginBottom: '5px' }} center={[30,30]} zoom={2} scrollWheelZoom={false}>
+            <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            { arr.map(a => a.ipLocation && <Marker position={a.ipLocation} />) }
+          </MapContainer>
+          <span style={{ marginBottom: '20px', color: 'rgba(255,255,255,0.1)' }}>*Should any IP addresses yield a location a pin will appear on the map.</span>
+        </Column>
+      );
+    };
+    setDisplayContents({
+      customAlerts: formCustomAlertsTable(customAlertsLog),
+      autoAlerts: formAutoAlertsTable(autoAlertsLog),
+      contents: formSourceBlock(contentsLog),
+      activityMap: formActivityMap(autoAlertsLog)
+    });
+  }, [contentsLog, autoAlertsLog, customAlertsLog]);
 
   const handleSelectLog = (id) => {
     setDisplayContents(null);
-    setFocusedLog(Logs.filter(log => log.id === id)[0]);
+    setAutoAlertsLog(null);
+    setCustomAlertsLog(null);
+    setFocusedLog(logs.find(log => log.id === id));
   };
 
   const handleRemoveLog = async (id) => {
     try {
-      const response = await axios.post('http://localhost:8000/remove_log/', { id }, {
+      console.log(process.env.REACT_APP_BACKEND_URL);
+      const response = await axios.post(process.env.REACT_APP_BACKEND_URL + '/remove_log/', { id }, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -127,9 +242,9 @@ const Logs = ({ setDisplayContents }) => {
 
   return(
     <Block>
-      <h1>Snort Logs</h1>
+      <h2>– Snort Logs</h2>
       { 
-        Logs && Logs.map(log => <Row>
+        logs && logs.map(log => <Row>
           <ActiveSpan onClick={()=>{ handleRemoveLog(log.id) }} style={{ marginRight: '10px' }}>❌</ActiveSpan>
           <ActiveSpan onClick={() => { handleSelectLog(log.id) }} style={{ fontWeight: 'bold' }}>{log.fname}</ActiveSpan>
         </Row>) 

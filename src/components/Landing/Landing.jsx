@@ -5,6 +5,8 @@ import styled from 'styled-components';
 
 import plexus from './145026-785786148.mp4';
 
+import Menu from '../Menu/Menu.jsx';
+
 const Wrap = styled.div`
   display: flex;
   flex: 1;
@@ -121,7 +123,7 @@ const Landing = () => {
 
   const fetchDynamicData = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/promo_data/');
+      const response = await axios.get(process.env.REACT_APP_BACKEND_URL + '/promo_data/');
       if(response.data.message === 'OK') {
         console.log('fetched');
         setCompanies(response.data.data.companies);
@@ -177,7 +179,8 @@ const Landing = () => {
 
   return(
     <Wrap>
-      <Block style={{ background: 'white', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Menu />
+      <Block style={{ marginTop: '70px', background: 'white', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         { 
         // HEADER BLOCK 
         }

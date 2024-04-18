@@ -31,17 +31,20 @@ const Menu = () => {
   const navigate = useNavigate();
 
   const token = localStorage.getItem('token');
-  if(!token) {
-    console.error('No token found!');
-    navigate('/login');
-    return;
-  }
-  let base64Url = token.split('.')[1];
-  let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(''));
-  const { role } = JSON.parse(jsonPayload);
+  // if(!token) {
+  //   console.error('No token found!');
+  //   // navigate('/');
+  //   return;
+  // }
+  let role = null;
+  if(token) {
+    let base64Url = token.split('.')[1];
+    let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    role = JSON.parse(jsonPayload)['role'];
+  };
 
   const dashboard = () => {
     navigate('/dashboard');
@@ -69,18 +72,27 @@ const Menu = () => {
 
   const logOut = () => {
     localStorage.removeItem('token');
+    navigate('/');
+  };
+
+  const logIn = () => {
     navigate('/login');
+  };
+
+  const signUp = () => {
+    return;
   };
 
   return(
     <Wrap>
-      <NavItem onClick={dashboard}>Dashboard</NavItem>
-      <NavItem onClick={addAPI}>Add API</NavItem>
-      <NavItem onClick={uploadFile}>Upload Log</NavItem>
-      <NavItem onClick={profile}>Profile</NavItem>
+      { token && <NavItem onClick={dashboard}>Dashboard</NavItem> }
+      { token && <NavItem onClick={addAPI}>Add API</NavItem> }
+      { token && <NavItem onClick={uploadFile}>Upload Log</NavItem> }
+      { token && <NavItem onClick={profile}>Profile</NavItem> }
       { megaRoles.includes(role) && <NavItem onClick={createAcc}>Create New Account</NavItem> }
       { megaRoles.includes(role) && <NavItem onClick={manageUsers}>Manage Users</NavItem> }
-      <NavItem onClick={logOut}>Log Out</NavItem>
+      { token ? <NavItem onClick={logOut}>Log Out</NavItem> : <NavItem onClick={logIn}>Log In</NavItem> }
+      { !token && <NavItem onClick={signUp}>Sign Up</NavItem> }
     </Wrap>
   );
 };

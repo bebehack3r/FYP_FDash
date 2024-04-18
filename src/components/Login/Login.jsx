@@ -102,7 +102,7 @@ const Login = () => {
 
   const login = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/login', { email, pass });
+      const response = await axios.post(process.env.REACT_APP_BACKEND_URL + '/login', { email, pass });
       if(response.data.message === 'OK') {
         localStorage.setItem('token', response.data.data);
         navigate('/dashboard');

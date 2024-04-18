@@ -131,7 +131,7 @@ const Profile = () => {
 
   const edit = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/update_user_profile', {
+      const response = await axios.post(process.env.REACT_APP_BACKEND_URL + '/update_user_profile', {
         id: userID,
         email,
         name,
@@ -174,7 +174,7 @@ const Profile = () => {
 
     const loadProfile = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/get_user_profile/${id}`, {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/get_user_profile/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

@@ -137,7 +137,7 @@ const Register = () => {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:8000/register', { email, name, pass, role }, {
+      const response = await axios.post(process.env.REACT_APP_BACKEND_URL + '/register', { email, name, pass, role }, {
         headers: {
           Authorization: `Bearer ${token}`
         }

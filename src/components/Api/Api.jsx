@@ -104,7 +104,7 @@ const Api = () => {
 
   const addAPI = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/add_endpoint', { url }, {
+      const response = await axios.post(process.env.REACT_APP_BACKEND_URL + '/add_endpoint', { url }, {
         headers: {
           Authorization: `Bearer ${token}`
         }
