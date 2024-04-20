@@ -59,13 +59,61 @@ const FileContent = styled.pre`
   height: 40vh;
 `;
 
-const APIs = ({ setDisplayContents, token }) => {
+const CreateAlertButton = styled.h3`
+  &:hover {
+    cursor: pointer
+  }
+`;
+
+const CustomAlertInput = styled.input`
+  width: 44%;
+  padding-left: 0.5%;
+  padding-right: 0.5%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+`;
+
+const CustomAlertInputLeft = styled(CustomAlertInput)`
+  margin-right: 1%;
+`;
+
+const CutomAlertButton = styled.input`
+  background: #8454F6;
+  border: none;
+  border-radius: 3px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+  width: 11%;
+  margin-left: 1%;
+  color: white;
+
+  &:hover {
+    cursor: pointer;
+    background: #6943C4;
+  }
+`;
+
+const CustomAlertActionButton = styled.span`
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const APIs = ({ setDisplayContents, token, focusPoint, setFocusPoint }) => {
   const [error, setError] = useState(null);
   const [APIs, setAPIs] = useState(null);
   const [focusedAPI, setFocusedAPI] = useState(null);
   const [contentsAPI, setContentsAPI] = useState(null);
   const [autoAlertsAPI, setAutoAlertsAPI] = useState(null);
   const [customAlertsAPI, setCustomAlertsAPI] = useState(null);
+  const [customAlertInit, setCustomAlertInit] = useState(false);
+  const [customAlertDescription, setCustomAlertDescription] = useState(null);
+  const [customAlertType, setCustomAlertType] = useState(null);
+
+  const genRanHex = size => [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join(''); // fuck react keys
 
   useEffect(() => {
     const fetchAPIs = async () => {
@@ -109,24 +157,6 @@ const APIs = ({ setDisplayContents, token }) => {
         setError('Frontend server malfunction. Please, contact your supplier');
       }
     };
-    const fetchCustomAlerts = async (uuid) => {
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/list_threat_notifications/${uuid}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        if(response.data.message === 'OK') {
-          setCustomAlertsAPI(response.data.data);
-        } else {
-          if(response.data.message === 'ERROR') setError(response.data.data);
-          else setError('Backend server malfunction. Please, contact your supplier');
-        }
-      } catch (error) {
-        console.error('Error fetching custom alerts for API:', error);
-        setError('Frontend server malfunction. Please, contact your supplier');
-      }
-    };
     analyzeAPI(focusedAPI.id);
     fetchCustomAlerts(focusedAPI.uuid);
   }, [focusedAPI]);
@@ -136,22 +166,43 @@ const APIs = ({ setDisplayContents, token }) => {
     const formCustomAlertsTable = (arr) => {
       return(
         <Column>
-          <h2>Custom Alerts:</h2>
+          <Row>
+            <h2>Custom Alerts:</h2>
+            <CreateAlertButton onClick={handleCustomAlertCreate}>&nbsp;&nbsp;+create</CreateAlertButton>
+          </Row>
+          {
+            customAlertInit && <Row>
+              <CustomAlertInputLeft type='text' id='desc' name='desc' placeholder='Describe alert' onChange={handleCustomAlertDescription} value={customAlertDescription} />
+              <CustomAlertInput type='text' id='type' name='type' placeholder='Give alert type' onChange={handleCustomAlertType} value={customAlertType} />
+              <CutomAlertButton type='submit' id='submit' name='submit' onClick={handleCustomAlertCreateSubmit} value='Create' />
+              {/* { !customAlertFocus && <CutomAlertButton type='submit' id='submit' name='submit' onClick={handleCreateCustomAlertSubmit} value='Create' /> }
+              { customAlertFocus && <CutomAlertButton type='submit' id='submit' name='submit' onClick={handleEditCustomAlertSubmit} value='Edit' /> } */}
+            </Row>
+          }
           <Table>
-            <TableRow>
-              <TableHeader>Type</TableHeader>
-              <TableHeader>Description</TableHeader>
-            </TableRow>
-            { 
-              arr.map(a => {
-                return(
-                  <TableRow key={ a.id}>
-                    <TableCell>{ a.type }</TableCell>
-                    <TableCell>{ a.description }</TableCell>
-                  </TableRow>
-                );
-              })
-            }
+            <tbody>
+              <TableRow>
+                <TableHeader width="12%">Type</TableHeader>
+                <TableHeader>Description</TableHeader>
+                <TableHeader width="12%" style={{ textAlign: 'center' }}>Action</TableHeader>
+              </TableRow>
+              { 
+                arr.map(a => {
+                  return(
+                    <TableRow key={ `${a.id}_row` }>
+                      <TableCell key={ `${a.id}_type`}>{ a.type }</TableCell>
+                      <TableCell key={ `${a.id}_desc`}>{ a.description }</TableCell>
+                      <TableCell key={ `${a.id}_action`}>
+                        <span key={ `${a.id}_action_span`} style={{ display: 'flex', width: '80%', marginLeft: '10%', justifyContent: 'space-evenly' }}>
+                          <CustomAlertActionButton key={ `${a.id}_action_edit`}>✏️</CustomAlertActionButton>
+                          <CustomAlertActionButton key={ `${a.id}_action_remove`} onClick={() => { handleCustomAlertRemove(a.id); }}>❌</CustomAlertActionButton>
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              }
+              </tbody>
           </Table>
         </Column>
       );
@@ -161,24 +212,26 @@ const APIs = ({ setDisplayContents, token }) => {
         <Column>
           <h2>Detected Alerts:</h2>
           <Table>
-            <TableRow>
-              <TableHeader>Priority</TableHeader>
-              <TableHeader>Description</TableHeader>
-              <TableHeader>Source IP</TableHeader>
-              <TableHeader>Destination IP</TableHeader>
-            </TableRow>
-            { 
-              arr.map(a => {
-                return(
-                  <TableRow key={ a.lineNumber}>
-                    <TableCell>{ a.severity_level }</TableCell>
-                    <TableCell>{ a.signature }</TableCell>
-                    <TableCell>{ a.src_ip }</TableCell>
-                    <TableCell>{ a.dest_ip }</TableCell>
-                  </TableRow>
-                );
-              })
-            }
+            <tbody>
+              <TableRow>
+                <TableHeader width="12%">Type</TableHeader>
+                <TableHeader>Description</TableHeader>
+                <TableHeader width="12%">Source IP</TableHeader>
+                <TableHeader width="12%">Destination IP</TableHeader>
+              </TableRow>
+              { 
+                arr.map(a => {
+                  return(
+                    <TableRow key={ `${genRanHex(10)}_row` }>
+                      <TableCell key={ `${genRanHex(10)}_severity` }>{ a.severity_level }</TableCell>
+                      <TableCell key={ `${genRanHex(10)}_sign` }>{ a.signature }</TableCell>
+                      <TableCell key={ `${genRanHex(10)}_src_ip` }>{ a.src_ip }</TableCell>
+                      <TableCell key={ `${genRanHex(10)}_dst_ip` }>{ a.dest_ip }</TableCell>
+                    </TableRow>
+                  );
+                })
+              }
+            </tbody>
           </Table>
         </Column>
       );
@@ -199,7 +252,7 @@ const APIs = ({ setDisplayContents, token }) => {
           <h2>Activity Map:</h2>
           <MapContainer style={{ width: '100%', height: '50vh', marginBottom: '5px' }} center={[30,30]} zoom={2} scrollWheelZoom={false}>
             <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            { arr.map(a => a.ipLocation && <Marker position={a.ipLocation} />) }
+            { arr.map(a => a.ipLocation && <Marker key={a.lineNumber} position={a.ipLocation} />) }
           </MapContainer>
           <span style={{ marginBottom: '20px', color: 'rgba(255,255,255,0.1)' }}>*Should any IP addresses yield a location a pin will appear on the map.</span>
         </Column>
@@ -211,12 +264,91 @@ const APIs = ({ setDisplayContents, token }) => {
       contents: formSourceBlock(contentsAPI),
       activityMap: formActivityMap(autoAlertsAPI)
     });
-  }, [contentsAPI, autoAlertsAPI, customAlertsAPI]);
+  }, [contentsAPI, autoAlertsAPI, customAlertsAPI, customAlertInit, customAlertDescription, customAlertType]);
 
-  const handleSelectAPI = (id) => {
+  const fetchCustomAlerts = async (uuid) => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/list_threat_notifications/${uuid}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if(response.data.message === 'OK') {
+        setCustomAlertsAPI(response.data.data);
+      } else {
+        if(response.data.message === 'ERROR') setError(response.data.data);
+        else setError('Backend server malfunction. Please, contact your supplier');
+      }
+    } catch (error) {
+      console.error('Error fetching custom alert for log:', error);
+      setError('Frontend server malfunction. Please, contact your supplier');
+    }
+  };
+
+  const handleCustomAlertCreate = () => {
+    setCustomAlertInit(true);
+  };
+
+  const handleCustomAlertDescription = (e) => {
+    setCustomAlertDescription(e.target.value);
+  };
+
+  const handleCustomAlertType = (e) => {
+    setCustomAlertType(e.target.value);
+  };
+
+  const handleCustomAlertCreateSubmit = async () => {
+    try {
+      const response = await axios.post(process.env.REACT_APP_BACKEND_URL + '/create_threat_notification/', {
+        uuid: focusedAPI.uuid, 
+        type: customAlertType,
+        desc: customAlertDescription
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if(response.data.message === 'OK') {
+        fetchCustomAlerts(focusedAPI.uuid);
+      } else {
+        if(response.data.message === 'ERROR') setError(response.data.data);
+        else setError('Backend server malfunction. Please, contact your supplier');
+      }
+    } catch (error) {
+      console.error('Error fetching logs:', error);
+      setError('Frontend server malfunction. Please, contact your supplier');
+    }
+  };
+
+  const handleCustomAlertRemove = async (id) => {
+    try {
+      const response = await axios.post(process.env.REACT_APP_BACKEND_URL + '/remove_threat_notification/', { id }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if(response.data.message === 'OK') {
+        fetchCustomAlerts(focusedAPI.uuid);
+      } else {
+        if(response.data.message === 'ERROR') setError(response.data.data);
+        else setError('Backend server malfunction. Please, contact your supplier');
+      }
+    } catch (error) {
+      console.error('Error fetching logs:', error);
+      setError('Frontend server malfunction. Please, contact your supplier');
+    }
+  };
+
+  useEffect(() => {
+    setFocusedAPI(null);
     setDisplayContents(null);
     setAutoAlertsAPI(null);
     setCustomAlertsAPI(null);
+  }, [focusPoint]);
+
+  const handleSelectAPI = (id) => {
+    if(focusedAPI?.id === id) return;
+    setFocusPoint(APIs.find(api => api.id === id));
     setFocusedAPI(APIs.find(api => api.id === id));
   };
 

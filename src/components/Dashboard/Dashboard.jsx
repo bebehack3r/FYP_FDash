@@ -50,6 +50,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const [displayContents, setDisplayContents] = useState(null);
+  const [focusPoint, setFocusPoint] = useState(null);
   const [error, setError] = useState(null);
 
   const token = localStorage.getItem('token');
@@ -68,8 +69,8 @@ const Dashboard = () => {
       <Workstage>
         <LeftSide>
           {!error ? <div style={{ width: '90%', marginLeft: '5%' }}>
-            <Logs setDisplayContents={setDisplayContents} token={token} />
-            <APIs setDisplayContents={setDisplayContents} token={token} />
+            <Logs setDisplayContents={setDisplayContents} focusPoint={focusPoint} setFocusPoint={setFocusPoint} token={token} />
+            <APIs setDisplayContents={setDisplayContents} focusPoint={focusPoint} setFocusPoint={setFocusPoint} token={token} />
           </div> : <p>{error}</p>}
         </LeftSide>
         <RightSide>

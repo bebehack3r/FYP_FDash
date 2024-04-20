@@ -96,7 +96,13 @@ const CutomAlertButton = styled.input`
   }
 `;
 
-const Logs = ({ setDisplayContents, token }) => {
+const CustomAlertActionButton = styled.span`
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const Logs = ({ setDisplayContents, token, focusPoint, setFocusPoint }) => {
   const [error, setError] = useState(null);
   const [logs, setLogs] = useState(null);
   const [focusedLog, setFocusedLog] = useState(null);
@@ -184,7 +190,12 @@ const Logs = ({ setDisplayContents, token }) => {
                     <TableRow key={ `${a.id}_row` }>
                       <TableCell key={ `${a.id}_type`}>{ a.type }</TableCell>
                       <TableCell key={ `${a.id}_desc`}>{ a.description }</TableCell>
-                      <TableCell key={ `${a.id}_action`}><span style={{ display: 'flex', width: '80%', marginLeft: '10%', justifyContent: 'space-evenly' }}><span>✏️</span><span>❌</span></span></TableCell>
+                      <TableCell key={ `${a.id}_action`}>
+                        <span key={ `${a.id}_action_span`} style={{ display: 'flex', width: '80%', marginLeft: '10%', justifyContent: 'space-evenly' }}>
+                          <CustomAlertActionButton key={ `${a.id}_action_edit`}>✏️</CustomAlertActionButton>
+                          <CustomAlertActionButton key={ `${a.id}_action_remove`} onClick={() => { handleCustomAlertRemove(a.id); }}>❌</CustomAlertActionButton>
+                        </span>
+                      </TableCell>  
                     </TableRow>
                   );
                 })
@@ -275,12 +286,15 @@ const Logs = ({ setDisplayContents, token }) => {
   const handleCustomAlertCreate = () => {
     setCustomAlertInit(true);
   };
+
   const handleCustomAlertDescription = (e) => {
     setCustomAlertDescription(e.target.value);
   };
+
   const handleCustomAlertType = (e) => {
     setCustomAlertType(e.target.value);
   };
+
   const handleCustomAlertCreateSubmit = async () => {
     try {
       const response = await axios.post(process.env.REACT_APP_BACKEND_URL + '/create_threat_notification/', {
@@ -303,7 +317,8 @@ const Logs = ({ setDisplayContents, token }) => {
       setError('Frontend server malfunction. Please, contact your supplier');
     }
   };
-  const handleRemoveCustomAlert = async (id) => {
+
+  const handleCustomAlertRemove = async (id) => {
     try {
       const response = await axios.post(process.env.REACT_APP_BACKEND_URL + '/remove_threat_notification/', { id }, {
         headers: {
@@ -322,10 +337,16 @@ const Logs = ({ setDisplayContents, token }) => {
     }
   };
 
-  const handleSelectLog = (id) => {
+  useEffect(() => {
+    setFocusedLog(null);
     setDisplayContents(null);
     setAutoAlertsLog(null);
     setCustomAlertsLog(null);
+  }, [focusPoint]);
+
+  const handleSelectLog = (id) => {
+    if(focusedLog?.id === id) return;
+    setFocusPoint(logs.find(log => log.id === id));
     setFocusedLog(logs.find(log => log.id === id));
   };
 
