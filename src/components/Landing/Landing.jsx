@@ -121,6 +121,14 @@ const Landing = () => {
   const [threats, setThreats] = useState(0);
   const [attacks, setAttacks] = useState(0);
 
+  const [registered, setRegistered] = useState(false);
+  const [fullName, setFullName] = useState(null);
+  const [companyName, setCompanyName] = useState(null);
+  const [companyEmployeeAmount, setCompanyEmployeeAmount] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [pass, setPass] = useState(null);
+  const [companyPosition, setCompanyPosition] = useState(null);
+
   const fetchDynamicData = async () => {
     try {
       const response = await axios.get(process.env.REACT_APP_BACKEND_URL + '/promo_data/');
@@ -151,9 +159,7 @@ const Landing = () => {
   };
 
   const checkVisibility = () => {
-    console.log('wow');
     if(document.getElementById('dynamicBlock').getBoundingClientRect().top < window.innerHeight / 1.2) {
-      console.log(companies);
       const companiesAmount = document.getElementById('companiesAmnt');
       const threatsAmount = document.getElementById('threatsAmnt');
       const attacksAmount = document.getElementById('attacksAmnt');
@@ -176,6 +182,53 @@ const Landing = () => {
     if(companies !== 0) window.addEventListener('scroll', checkVisibility);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companies]);
+
+  const handleFullName = (e) => {
+    setFullName(e.target.value);
+  };
+
+  const handleCompanyName = (e) => {
+    setCompanyName(e.target.value);
+  };
+
+  const handleCompanyEmployeeAmount = (e) => {
+    setCompanyEmployeeAmount(e.target.value);
+  };
+
+  const handleEmail = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePass = (e) => {
+    setPass(e.target.value);
+  };
+
+  const handleCompanyPosition = (e) => {
+    setCompanyPosition(e.target.value);
+  };
+
+  const handleRegisterSubmit = async () => {
+    try {
+      const response = await axios.post(process.env.REACT_APP_BACKEND_URL + '/register_company/', { 
+        fullName,
+        companyName,
+        companyEmployeeAmount,
+        companyPosition,
+        email,
+        pass
+      });
+      console.log(response.data)
+      if(response.data.message === 'OK') {
+        setRegistered(true);
+      } else {
+        if(response.data.message === 'ERROR') setError(response.data.data);
+        else setError('Backend server malfunction. Please, contact your supplier');
+      }
+    } catch (error) {
+      console.error('Error fetching logs:', error);
+      setError('Frontend server malfunction. Please, contact your supplier');
+    }
+  }
 
   return(
     <Wrap>
@@ -278,40 +331,49 @@ const Landing = () => {
         { 
         // REGISTER BLOCK 
         }
-        <h1>Ready to give Dash a try?</h1>
-        <form style={{ display: 'flex', marginTop: '30px', flexDirection: 'column', width: '50vw', marginLeft: '25vw', alignItems: 'flex-start', textAlign: 'left' }}>
-          <Row>
-            <Column style={{ marginRight: '30px' }}>
-              <label htmlFor='fullName'>Full Name: </label>
-              <RegisterInput type='text' name='fullName' placeholder='Full Name' />
-            </Column>
-            <Column>
-              <label htmlFor='fullName'>Company Name: </label>
-              <RegisterInput type='text' name='companyName' placeholder='Company Name' />
-            </Column>
-          </Row>
-          <Row>
-            <Column style={{ marginRight: '30px' }}>
-              <label htmlFor='fullName'>Company Size: </label>
-              <RegisterInput type='text' name='employeesCount' placeholder='Amount of Employees' />
-            </Column>
-            <Column>
-              <label htmlFor='fullName'>Company E-mail: </label>
-              <RegisterInput type='text' name='email' placeholder='E-mail' />
-            </Column>
-          </Row>
-          <Row>
-            <Column style={{ marginRight: '30px' }}>
-              <label htmlFor='fullName'>Password: </label>
-              <RegisterInput type='text' name='password' placeholder='Password' />
-            </Column>
-            <Column>
-              <label htmlFor='fullName'>Confirm Password: </label>
-              <RegisterInput type='text' name='passwordConfirm' placeholder='Confirm Password' />
-            </Column>
-          </Row>
-          <SubscriptionButton>Join Dash</SubscriptionButton>
-        </form>
+        { !registered && <>
+            <h1>Ready to give Dash a try?</h1>
+            <form style={{ display: 'flex', marginTop: '30px', flexDirection: 'column', width: '50vw', marginLeft: '25vw', alignItems: 'flex-start', textAlign: 'left' }}>
+              <Row>
+                <Column style={{ marginRight: '30px' }}>
+                  <label htmlFor='companyName'>Company Name: </label>
+                  <RegisterInput type='text' name='companyName' placeholder='Company Name' onChange={handleCompanyName} value={companyName} />
+                </Column>
+                <Column>
+                  <label htmlFor='companyPosition'>Company Position: </label>
+                  <RegisterInput type='text' name='companyPosition' placeholder='Company Position' onChange={handleCompanyPosition} value={companyPosition} />
+                </Column>
+              </Row>
+              <Row>
+                <Column style={{ marginRight: '30px' }}>
+                  <label htmlFor='employeesCount'>Company Size: </label>
+                  <RegisterInput type='text' name='employeesCount' placeholder='Amount of Employees' onChange={handleCompanyEmployeeAmount} value={companyEmployeeAmount} />
+                </Column>
+                <Column>
+                  <label htmlFor='email'>Company E-mail: </label>
+                  <RegisterInput type='text' name='email' placeholder='E-mail' onChange={handleEmail} value={email} />
+                </Column>
+              </Row>
+              <Row>
+                <Column style={{ marginRight: '30px' }}>
+                  <label htmlFor='fullName'>Full Name: </label>
+                  <RegisterInput type='text' name='fullName' placeholder='Full Name' onChange={handleFullName} value={fullName} />
+                </Column>
+                <Column>
+                  <label htmlFor='password'>Password: </label>
+                  <RegisterInput type='text' name='password' placeholder='Password' onChange={handlePass} value={pass} />
+                </Column>
+              </Row>
+              <SubscriptionButton onClick={handleRegisterSubmit}>Join Dash</SubscriptionButton>
+            </form>
+          </>
+        }
+        {
+          registered && <>
+            <h1>Thank you for your registration!</h1>
+            <p>Please, follow to <a href="/login">login page</a> to access your company profile.</p>
+          </>
+        }
       </Block>
       <Block style={{ height: '5vh' }}>
         { 
