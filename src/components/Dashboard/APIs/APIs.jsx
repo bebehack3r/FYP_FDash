@@ -243,9 +243,9 @@ const APIs = ({ setDisplayContents, token }) => {
     <Block>
       <h2>– Suricata API</h2>
       { 
-        APIs && APIs.map(api => <Row>
-          <ActiveSpan onClick={()=>{ handleRemoveAPI(api.id) }} style={{ marginRight: '10px' }}>❌</ActiveSpan>
-          <ActiveSpan onClick={() => { handleSelectAPI(api.id) }} style={{ fontWeight: 'bold' }}>{api.url}</ActiveSpan>
+        APIs && APIs.map(api => <Row key={ `${api.id}_row` }>
+          <ActiveSpan key={ `${api.id}_remove` } onClick={()=>{ handleRemoveAPI(api.id) }} style={{ marginRight: '10px' }}>❌</ActiveSpan>
+          <ActiveSpan key={ `${api.id}_name` } onClick={() => { handleSelectAPI(api.id) }} style={{ fontWeight: 'bold' }}>{api.url}</ActiveSpan>
         </Row>) 
       }
     </Block>

@@ -59,6 +59,43 @@ const FileContent = styled.pre`
   height: 40vh;
 `;
 
+const CreateAlertButton = styled.h3`
+  &:hover {
+    cursor: pointer
+  }
+`;
+
+const CustomAlertInput = styled.input`
+  width: 44%;
+  padding-left: 0.5%;
+  padding-right: 0.5%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+`;
+
+const CustomAlertInputLeft = styled(CustomAlertInput)`
+  margin-right: 1%;
+`;
+
+const CutomAlertButton = styled.input`
+  background: #8454F6;
+  border: none;
+  border-radius: 3px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+  width: 11%;
+  margin-left: 1%;
+  color: white;
+
+  &:hover {
+    cursor: pointer;
+    background: #6943C4;
+  }
+`;
+
 const Logs = ({ setDisplayContents, token }) => {
   const [error, setError] = useState(null);
   const [logs, setLogs] = useState(null);
@@ -66,6 +103,9 @@ const Logs = ({ setDisplayContents, token }) => {
   const [contentsLog, setContentsLog] = useState(null);
   const [autoAlertsLog, setAutoAlertsLog] = useState(null);
   const [customAlertsLog, setCustomAlertsLog] = useState(null);
+  const [customAlertInit, setCustomAlertInit] = useState(false);
+  const [customAlertDescription, setCustomAlertDescription] = useState(null);
+  const [customAlertType, setCustomAlertType] = useState(null);
 
   useEffect(() => {
     const fetchLogs = async () => {
@@ -109,24 +149,6 @@ const Logs = ({ setDisplayContents, token }) => {
         setError('Frontend server malfunction. Please, contact your supplier');
       }
     };
-    const fetchCustomAlerts = async (uuid) => {
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/list_threat_notifications/${uuid}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        if(response.data.message === 'OK') {
-          setCustomAlertsLog(response.data.data);
-        } else {
-          if(response.data.message === 'ERROR') setError(response.data.data);
-          else setError('Backend server malfunction. Please, contact your supplier');
-        }
-      } catch (error) {
-        console.error('Error fetching custom alert for log:', error);
-        setError('Frontend server malfunction. Please, contact your supplier');
-      }
-    };
     analyzeLog(focusedLog.id);
     fetchCustomAlerts(focusedLog.uuid);
   }, [focusedLog]);
@@ -136,22 +158,38 @@ const Logs = ({ setDisplayContents, token }) => {
     const formCustomAlertsTable = (arr) => {
       return(
         <Column>
-          <h2>Custom Alerts:</h2>
+          <Row>
+            <h2>Custom Alerts:</h2>
+            <CreateAlertButton onClick={handleCustomAlertCreate}>&nbsp;&nbsp;+create</CreateAlertButton>
+          </Row>
+          {
+            customAlertInit && <Row>
+              <CustomAlertInputLeft type='text' id='desc' name='desc' placeholder='Describe alert' onChange={handleCustomAlertDescription} value={customAlertDescription} />
+              <CustomAlertInput type='text' id='type' name='type' placeholder='Give alert type' onChange={handleCustomAlertType} value={customAlertType} />
+              <CutomAlertButton type='submit' id='submit' name='submit' onClick={handleCustomAlertCreateSubmit} value='Create' />
+              {/* { !customAlertFocus && <CutomAlertButton type='submit' id='submit' name='submit' onClick={handleCreateCustomAlertSubmit} value='Create' /> }
+              { customAlertFocus && <CutomAlertButton type='submit' id='submit' name='submit' onClick={handleEditCustomAlertSubmit} value='Edit' /> } */}
+            </Row>
+          }
           <Table>
-            <TableRow>
-              <TableHeader>Type</TableHeader>
-              <TableHeader>Description</TableHeader>
-            </TableRow>
-            { 
-              arr.map(a => {
-                return(
-                  <TableRow key={ a.id}>
-                    <TableCell>{ a.type }</TableCell>
-                    <TableCell>{ a.description }</TableCell>
-                  </TableRow>
-                );
-              })
-            }
+            <tbody>
+              <TableRow>
+                <TableHeader width="12%">Type</TableHeader>
+                <TableHeader>Description</TableHeader>
+                <TableHeader width="12%" style={{ textAlign: 'center' }}>Action</TableHeader>
+              </TableRow>
+              { 
+                arr.map(a => {
+                  return(
+                    <TableRow key={ `${a.id}_row` }>
+                      <TableCell key={ `${a.id}_type`}>{ a.type }</TableCell>
+                      <TableCell key={ `${a.id}_desc`}>{ a.description }</TableCell>
+                      <TableCell key={ `${a.id}_action`}><span style={{ display: 'flex', width: '80%', marginLeft: '10%', justifyContent: 'space-evenly' }}><span>✏️</span><span>❌</span></span></TableCell>
+                    </TableRow>
+                  );
+                })
+              }
+              </tbody>
           </Table>
         </Column>
       );
@@ -161,24 +199,26 @@ const Logs = ({ setDisplayContents, token }) => {
         <Column>
           <h2>Detected Alerts:</h2>
           <Table>
-            <TableRow>
-              <TableHeader>Type</TableHeader>
-              <TableHeader>Description</TableHeader>
-              <TableHeader>Source IP</TableHeader>
-              <TableHeader>Destination IP</TableHeader>
-            </TableRow>
-            { 
-              arr.map(a => {
-                return(
-                  <TableRow key={ a.lineNumber}>
-                    <TableCell>{ a.threatType }</TableCell>
-                    <TableCell>{ a.sourceLine }</TableCell>
-                    <TableCell>{ a.ipAddress }</TableCell>
-                    <TableCell>{ a.destinationIPAddress }</TableCell>
-                  </TableRow>
-                );
-              })
-            }
+            <tbody>
+              <TableRow>
+                <TableHeader width="12%">Type</TableHeader>
+                <TableHeader>Description</TableHeader>
+                <TableHeader width="12%">Source IP</TableHeader>
+                <TableHeader width="12%">Destination IP</TableHeader>
+              </TableRow>
+              { 
+                arr.map(a => {
+                  return(
+                    <TableRow key={ `${a.lineNumber}_row` }>
+                        <TableCell key={ `${a.lineNumber}_type` }>{ a.threatType }</TableCell>
+                        <TableCell key={ `${a.lineNumber}_sline` }>{ a.sourceLine }</TableCell>
+                        <TableCell key={ `${a.lineNumber}_src_ip` }>{ a.ipAddress }</TableCell>
+                        <TableCell key={ `${a.lineNumber}_dst_ip` }>{ a.destinationIPAddress }</TableCell>
+                    </TableRow>
+                  );
+                })
+              }
+            </tbody>
           </Table>
         </Column>
       );
@@ -199,7 +239,7 @@ const Logs = ({ setDisplayContents, token }) => {
           <h2>Activity Map:</h2>
           <MapContainer style={{ width: '100%', height: '50vh', marginBottom: '5px' }} center={[30,30]} zoom={2} scrollWheelZoom={false}>
             <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            { arr.map(a => a.ipLocation && <Marker position={a.ipLocation} />) }
+            { arr.map(a => a.ipLocation && <Marker key={a.lineNumber} position={a.ipLocation} />) }
           </MapContainer>
           <span style={{ marginBottom: '20px', color: 'rgba(255,255,255,0.1)' }}>*Should any IP addresses yield a location a pin will appear on the map.</span>
         </Column>
@@ -211,7 +251,76 @@ const Logs = ({ setDisplayContents, token }) => {
       contents: formSourceBlock(contentsLog),
       activityMap: formActivityMap(autoAlertsLog)
     });
-  }, [contentsLog, autoAlertsLog, customAlertsLog]);
+  }, [contentsLog, autoAlertsLog, customAlertsLog, customAlertInit, customAlertDescription, customAlertType]);
+
+  const fetchCustomAlerts = async (uuid) => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/list_threat_notifications/${uuid}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if(response.data.message === 'OK') {
+        setCustomAlertsLog(response.data.data);
+      } else {
+        if(response.data.message === 'ERROR') setError(response.data.data);
+        else setError('Backend server malfunction. Please, contact your supplier');
+      }
+    } catch (error) {
+      console.error('Error fetching custom alert for log:', error);
+      setError('Frontend server malfunction. Please, contact your supplier');
+    }
+  };
+
+  const handleCustomAlertCreate = () => {
+    setCustomAlertInit(true);
+  };
+  const handleCustomAlertDescription = (e) => {
+    setCustomAlertDescription(e.target.value);
+  };
+  const handleCustomAlertType = (e) => {
+    setCustomAlertType(e.target.value);
+  };
+  const handleCustomAlertCreateSubmit = async () => {
+    try {
+      const response = await axios.post(process.env.REACT_APP_BACKEND_URL + '/create_threat_notification/', {
+        uuid: focusedLog.uuid, 
+        type: customAlertType,
+        desc: customAlertDescription
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if(response.data.message === 'OK') {
+        fetchCustomAlerts(focusedLog.uuid);
+      } else {
+        if(response.data.message === 'ERROR') setError(response.data.data);
+        else setError('Backend server malfunction. Please, contact your supplier');
+      }
+    } catch (error) {
+      console.error('Error fetching logs:', error);
+      setError('Frontend server malfunction. Please, contact your supplier');
+    }
+  };
+  const handleRemoveCustomAlert = async (id) => {
+    try {
+      const response = await axios.post(process.env.REACT_APP_BACKEND_URL + '/remove_threat_notification/', { id }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if(response.data.message === 'OK') {
+        fetchCustomAlerts(focusedLog.uuid);
+      } else {
+        if(response.data.message === 'ERROR') setError(response.data.data);
+        else setError('Backend server malfunction. Please, contact your supplier');
+      }
+    } catch (error) {
+      console.error('Error fetching logs:', error);
+      setError('Frontend server malfunction. Please, contact your supplier');
+    }
+  };
 
   const handleSelectLog = (id) => {
     setDisplayContents(null);
@@ -244,9 +353,9 @@ const Logs = ({ setDisplayContents, token }) => {
     <Block>
       <h2>– Snort Logs</h2>
       { 
-        logs && logs.map(log => <Row>
-          <ActiveSpan onClick={()=>{ handleRemoveLog(log.id) }} style={{ marginRight: '10px' }}>❌</ActiveSpan>
-          <ActiveSpan onClick={() => { handleSelectLog(log.id) }} style={{ fontWeight: 'bold' }}>{log.fname}</ActiveSpan>
+        logs && logs.map(log => <Row key={ `${log.id}_row` }>
+          <ActiveSpan key={ `${log.id}_remove` } onClick={()=>{ handleRemoveLog(log.id) }} style={{ marginRight: '10px' }}>❌</ActiveSpan>
+          <ActiveSpan key={ `${log.id}_name` } onClick={() => { handleSelectLog(log.id) }} style={{ fontWeight: 'bold' }}>{log.fname}</ActiveSpan>
         </Row>) 
       }
     </Block>

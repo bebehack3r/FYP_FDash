@@ -75,7 +75,7 @@ const Dashboard = () => {
         <RightSide>
           { displayContents && Object.keys(displayContents).map(key => {
               return(
-                <InnerBlock>
+                <InnerBlock key={ `${key}_block` }>
                   { displayContents[key] }
                 </InnerBlock>
               )
