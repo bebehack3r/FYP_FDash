@@ -38,20 +38,19 @@ const HeaderLogo = styled.img`
 `;
 
 const Button = styled.button`
-background-color: #6943C4;
-border: none;
-color: black;
-font-size: 10pt;
-padding: 10px 16px;
-margin: 2px 2px;
-cursor: pointer;
-border-radius: 12px;
-&:hover {
+  background-color: #6943C4;
+  border: none;
+  color: black;
+  font-size: 10pt;
+  padding: 10px 16px;
+  margin: 2px 2px;
   cursor: pointer;
-  color: rgba(255,255,255,0.8);
-}
-
-  `;
+  border-radius: 12px;
+  &:hover {
+    cursor: pointer;
+    color: rgba(255,255,255,0.8);
+  }
+`;
 
 const Menu = () => {
   const megaRoles = ['admin', 'superAdmin', 'gigaAdmin'];

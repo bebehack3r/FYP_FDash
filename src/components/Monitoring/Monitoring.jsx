@@ -19,23 +19,25 @@ const Workstage = styled.div`
 const AccessLogsList = styled.div`
   display: flex;
   flex-direction: column;
-  width: 60vw;
+  width: 80vw;
   border-radius: 5px;
   background: #161414;
   color: white;
   margin-top: 10vh;
-  margin-left: 20vw;
+  margin-left: 10vw;
   box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
   min-height: 80vh;
+  margin-bottom: 5vh;
 `;
 
 const AccessLogsListTitle = styled.h1`
-  margin-left: 7%;
+  margin-left: 5%;
 `;
 
 const AccessLogsListTable = styled.table`
   width: 90%;
   margin-left: 5%;
+  margin-bottom: 5vh;
 `;
 
 const AccessLogsListEntry = styled.tr`

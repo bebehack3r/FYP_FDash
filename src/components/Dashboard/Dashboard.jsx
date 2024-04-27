@@ -17,7 +17,7 @@ const Workstage = styled.div`
   display: flex;
   flex: 1;
   flex-direction: row;
-  margin-top: 70px;
+  margin-top: 90px;
   margin-bottom: 50px;
   color: white;
 `;
