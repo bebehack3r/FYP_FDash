@@ -10,6 +10,7 @@ import Profile from './components/Profile/Profile.jsx';
 import SuccessUser from './components/SuccessUser/SuccessUser.jsx';
 import ManageUsers from './components/ManageUsers/ManageUsers.jsx';
 import Api from './components/Api/Api.jsx';
+import Monitoring from './components/Monitoring/Monitoring.jsx';
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/successUser" Component={SuccessUser} />
         <Route path="/manageUsers" Component={ManageUsers} />
         <Route path="/api" Component={Api} />
+        <Route path="/monitoring" Component={Monitoring} />
       </Routes>
     </Router>
   );
