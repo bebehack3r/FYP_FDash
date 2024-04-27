@@ -27,6 +27,7 @@ const NavItem = styled.div`
 
 const Menu = () => {
   const megaRoles = ['admin', 'superAdmin', 'gigaAdmin'];
+  const ownerWide = ['gigaAdmin'];
 
   const navigate = useNavigate();
 
@@ -57,6 +58,10 @@ const Menu = () => {
   const uploadFile = () => {
     navigate('/upload');
   };
+
+  const monitoring = () => {
+    navigate('/monitoring');
+  }
 
   const createAcc = () => {
     navigate('/register');
@@ -89,6 +94,7 @@ const Menu = () => {
       { token && <NavItem onClick={addAPI}>Add API</NavItem> }
       { token && <NavItem onClick={uploadFile}>Upload Log</NavItem> }
       { token && <NavItem onClick={profile}>Profile</NavItem> }
+      { ownerWide.includes(role) && <NavItem onClick={monitoring}>Access Logs</NavItem> }
       { megaRoles.includes(role) && <NavItem onClick={createAcc}>Create New Account</NavItem> }
       { megaRoles.includes(role) && <NavItem onClick={manageUsers}>Manage Users</NavItem> }
       { token ? <NavItem onClick={logOut}>Log Out</NavItem> : <NavItem onClick={logIn}>Log In</NavItem> }
