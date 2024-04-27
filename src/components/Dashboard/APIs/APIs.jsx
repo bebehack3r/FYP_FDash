@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import styled from 'styled-components';
 import axios from 'axios';
+import {LineChart, Line, PieChart, Pie, Cell, Legend, Tooltip,BarChart, Bar, Rectangle, XAxis, YAxis, ZAxis, CartesianGrid } from 'recharts';
 
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
@@ -258,11 +259,121 @@ const APIs = ({ setDisplayContents, token, focusPoint, setFocusPoint }) => {
         </Column>
       );
     };
+    const formPieChart = (arr) => {
+      // Define data for the pie chart
+      const data = arr.map((a) => ({
+        name: a.signature,
+        value: a.severity,
+      }));
+    
+      // Generate unique colors based on the index
+      const generateColor = (index) => {
+        const hue = (index * 137.5) % 360; // This formula ensures a unique color for each segment
+        return `hsl(${hue}, 70%, 50%)`;
+      };
+    
+      return (
+        <Column>
+          <h2>Severity level of Detected Alerts with numbers:</h2>
+          <PieChart width={1000} height={500}>
+            <Pie
+              data={data}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              innerRadius={120}
+              outerRadius={150}
+              paddingAngle={3}
+            >
+              {/* Apply unique colors to each segment */}
+              {data.map((_, index) => (
+                <Cell key={`cell-${index}`} fill={generateColor(index)} />
+              ))}
+            </Pie>
+            <Legend layout="vertical" align="right" verticalAlign="middle" />
+            <Tooltip />
+          </PieChart>
+        </Column>
+      );
+    };
+    const formLineChart = (arr) => {
+      const groupedByTime = arr.reduce((acc, a) => {
+        const date = new Date(a.timestamp).toISOString().slice(0, 10); // Group by date
+        acc[date] = (acc[date] || 0) + 1;
+        return acc;
+      }, {});
+        const chartData = Object.keys(groupedByTime).map(key => ({
+          date: key,
+          count: groupedByTime[key],
+        }));
+        return (
+          <Column><h2>TimeStamp Counts:</h2>
+          <LineChart
+            width={1000}
+            height={500}
+            data={chartData}
+            margin={{
+              top: 30,
+              right: 30,
+              left: 30,
+              bottom: 30,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="white" />
+            <XAxis dataKey="date" stroke="white"/>
+            <YAxis stroke='white' label={{
+            value: 'Number of TimeStamp Count',
+            angle: -90,
+            position: 'insideLeft',
+            dy: 100, 
+            fill: 'white',
+          }}/>
+            <Tooltip />
+            <Legend />
+            <Line type="white" dataKey="count" stroke="red" activeDot={{ r: 8 }} />
+          </LineChart>
+          </Column>
+        );
+      };
+      const formBarChart = (arr) => {
+        
+      const data = arr.map((a) => ({
+        severity_level: a.severity_level,
+        severity: a.severity,
+      }));
+      return (
+        <Column><h2>Severity Levels:</h2>
+        <BarChart
+          width={1000}
+          height={500}
+          data={data}
+          margin={{
+            top: 20,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="severity_level" name="Severity Level" />
+          <YAxis name="Alert Count" />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="severity" fill="#8158E7" /> 
+        </BarChart>
+      </Column>
+      );
+    };
+    
     setDisplayContents({
       customAlerts: formCustomAlertsTable(customAlertsAPI),
       autoAlerts: formAutoAlertsTable(autoAlertsAPI),
       contents: formSourceBlock(contentsAPI),
-      activityMap: formActivityMap(autoAlertsAPI)
+      activityMap: formActivityMap(autoAlertsAPI),
+      pieChart: formPieChart(autoAlertsAPI),
+      barChart: formBarChart(autoAlertsAPI),
+      lineChart: formLineChart(autoAlertsAPI),
     });
   }, [contentsAPI, autoAlertsAPI, customAlertsAPI, customAlertInit, customAlertDescription, customAlertType]);
 
