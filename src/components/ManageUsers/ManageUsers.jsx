@@ -68,6 +68,8 @@ const ManageUsers = () => {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState(null);
 
+  const allRoles = ['gigaAdmin','superAdmin','admin','analyst','user'];
+
   const token = localStorage.getItem('token');
   let role = null;
   if(token) {
@@ -160,7 +162,7 @@ const ManageUsers = () => {
                 <UserListCell>{user.name}</UserListCell>
                 <UserListCell>{user.email}</UserListCell>
                 <UserListCell>
-                  <RoleOptions name='role' id='role' onChange={(e) => { handleRoleSwitch(user.id, e.target.value) }}>
+                  <RoleOptions name='role' id='role' onChange={(e) => { handleRoleSwitch(user.id, e.target.value) }} disabled={allRoles.indexOf(role) > allRoles.indexOf(user.role) ? "true" : "false"}>
                     <option value='user' selected={user.role === 'user'}>User</option>
                     <option value='analyst' selected={user.role === 'analyst'}>Analyst</option>
                     <option value='admin' selected={user.role === 'admin'}>Admin</option>
