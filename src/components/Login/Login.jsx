@@ -107,7 +107,8 @@ const Login = () => {
         localStorage.setItem('token', response.data.data);
         navigate('/dashboard');
       } else {
-        if(response.data.message === 'ERROR') setError(response.data.data);
+        if(response.status === 403) setError(response.data.data);
+        else if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
       }
     } catch (error) {
@@ -130,7 +131,7 @@ const Login = () => {
         <h1>Welcome to Dash!</h1>
         <h1>Web-based IDS System</h1>
         <ActionBlockDiv>
-          {error && <h3>error</h3>}
+          {error && <h3>{ error }</h3>}
           <ActionBlockDivInner>
             <LabelField htmlFor='login'>E-mail</LabelField>
             <InputField type='text' id='login' name='login' onChange={handleEmail} placeholder='Enter your e-mail' />
