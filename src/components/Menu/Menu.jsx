@@ -53,7 +53,8 @@ const Button = styled.button`
 `;
 
 const Menu = () => {
-  const megaRoles = ['admin', 'superAdmin', 'gigaAdmin'];
+  const privRoles = ['analyst', 'admin', 'superAdmin', 'gigaAdmin'];
+  const megaRoles = ['superAdmin', 'gigaAdmin'];
   const ownerWide = ['gigaAdmin'];
 
   const navigate = useNavigate();
@@ -123,8 +124,8 @@ const Menu = () => {
     <Wrap>
       <HeaderLogo  onClick={dashboard} src={logo} />
       { token && <NavItem onClick={dashboard}>Dashboard</NavItem> }
-      { token && <NavItem onClick={addAPI}>Add API</NavItem> }
-      { token && <NavItem onClick={uploadFile}>Upload Log</NavItem> }
+      { privRoles.includes(role) && <NavItem onClick={addAPI}>Add API</NavItem> }
+      { privRoles.includes(role) && <NavItem onClick={uploadFile}>Upload Log</NavItem> }
       { token && <NavItem onClick={profile}>Profile</NavItem> }
       { ownerWide.includes(role) && <NavItem onClick={monitoring}>Access Logs</NavItem> }
       { megaRoles.includes(role) && <NavItem onClick={createAcc}>Create New Account</NavItem> }
