@@ -68,7 +68,7 @@ const ManageUsers = () => {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState(null);
 
-  const allRoles = ['gigaAdmin','superAdmin','admin','analyst','user'];
+  const allRoles = ['gigaAdmin','superAdmin','admin','analyst','user','suspended'];
 
   const token = localStorage.getItem('token');
   let role = null;
@@ -162,12 +162,12 @@ const ManageUsers = () => {
                 <UserListCell>{user.name}</UserListCell>
                 <UserListCell>{user.email}</UserListCell>
                 <UserListCell>
-                  <RoleOptions name='role' id='role' onChange={(e) => { handleRoleSwitch(user.id, e.target.value) }} disabled={allRoles.indexOf(role) > allRoles.indexOf(user.role) ? "false" : "true"}>
+                  <RoleOptions name='role' id='role' onChange={(e) => { handleRoleSwitch(user.id, e.target.value) }} disabled={allRoles.indexOf(role) > allRoles.indexOf(user.role)}>
                     <option value='user' selected={user.role === 'user'}>User</option>
                     <option value='analyst' selected={user.role === 'analyst'}>Analyst</option>
                     <option value='admin' selected={user.role === 'admin'}>Admin</option>
-                    <option value='superAdmin' selected={user.role === 'superAdmin'} disabled={['superAdmin','gigaAdmin'].includes(role) ? "false" : "true"}>Super Admin</option>
-                    <option value='gigaAdmin' selected={user.role === 'gigaAdmin'} disabled={['gigaAdmin'].includes(role) ? "false" : "true"}>Giga Admin</option>
+                    <option value='superAdmin' selected={user.role === 'superAdmin'} disabled={!['superAdmin','gigaAdmin'].includes(role)}>Super Admin</option>
+                    <option value='gigaAdmin' selected={user.role === 'gigaAdmin'} disabled={!['gigaAdmin'].includes(role)}>Giga Admin</option>
                     <option value='suspended' selected={user.role === 'suspended'}>Suspended</option>
                   </RoleOptions>
                 </UserListCell>
