@@ -69,6 +69,15 @@ const ManageUsers = () => {
   const [error, setError] = useState(null);
 
   const token = localStorage.getItem('token');
+  let role = null;
+  if(token) {
+    let base64Url = token.split('.')[1];
+    let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    role = JSON.parse(jsonPayload)['role'];
+  };
 
   const suspendUser = async (id) => {
     try {
@@ -155,8 +164,8 @@ const ManageUsers = () => {
                     <option value='user' selected={user.role === 'user'}>User</option>
                     <option value='analyst' selected={user.role === 'analyst'}>Analyst</option>
                     <option value='admin' selected={user.role === 'admin'}>Admin</option>
-                    { ['superAdmin', 'gigaAdmin'].includes(user.role) && <option value='superAdmin' selected={user.role === 'superAdmin'}>Super Admin</option> }
-                    { ['superAdmin', 'gigaAdmin'].includes(user.role) && <option value='gigaAdmin' selected={user.role === 'gigaAdmin'}>Giga Admin</option> }
+                    <option value='superAdmin' selected={user.role === 'superAdmin'} disabled={['superAdmin','gigaAdmin'].includes(role) ? "false" : "true"}>Super Admin</option>
+                    <option value='gigaAdmin' selected={user.role === 'gigaAdmin'} disabled={['gigaAdmin'].includes(role) ? "false" : "true"}>Giga Admin</option>
                     <option value='suspended' selected={user.role === 'suspended'}>Suspended</option>
                   </RoleOptions>
                 </UserListCell>
