@@ -361,7 +361,7 @@ const Landing = () => {
                 </Column>
                 <Column>
                   <label htmlFor='password'>Password: </label>
-                  <RegisterInput type='text' name='password' placeholder='Password' onChange={handlePass} value={pass} />
+                  <RegisterInput type='password' name='password' placeholder='Password' onChange={handlePass} value={pass} />
                 </Column>
               </Row>
               <SubscriptionButton onClick={handleRegisterSubmit}>Join Dash</SubscriptionButton>

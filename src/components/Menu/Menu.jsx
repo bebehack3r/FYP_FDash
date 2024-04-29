@@ -112,7 +112,11 @@ const Menu = () => {
   };
 
   const signUp = () => {
-    return;
+    
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth",
+    });
   };
 
   return(
