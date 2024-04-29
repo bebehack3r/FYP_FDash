@@ -102,7 +102,7 @@ const CustomAlertActionButton = styled.span`
   }
 `;
 
-const Logs = ({ setDisplayContents, token, focusPoint, setFocusPoint }) => {
+const Logs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) => {
   const [error, setError] = useState(null);
   const [logs, setLogs] = useState(null);
   const [focusedLog, setFocusedLog] = useState(null);
@@ -375,7 +375,7 @@ const Logs = ({ setDisplayContents, token, focusPoint, setFocusPoint }) => {
       <h2>– Snort Logs</h2>
       { 
         logs && logs.map(log => <Row key={ `${log.id}_row` }>
-          <ActiveSpan key={ `${log.id}_remove` } onClick={()=>{ handleRemoveLog(log.id) }} style={{ marginRight: '10px' }}>❌</ActiveSpan>
+          { ['analyst', 'admin','superAdmin','gigaAdmin'].includes(role) && <ActiveSpan key={ `${log.id}_remove` } onClick={()=>{ handleRemoveLog(log.id) }} style={{ marginRight: '10px' }}>❌</ActiveSpan> }
           <ActiveSpan key={ `${log.id}_name` } onClick={() => { handleSelectLog(log.id) }} style={{ fontWeight: 'bold' }}>{log.fname}</ActiveSpan>
         </Row>) 
       }

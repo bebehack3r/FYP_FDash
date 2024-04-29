@@ -103,7 +103,7 @@ const CustomAlertActionButton = styled.span`
   }
 `;
 
-const APIs = ({ setDisplayContents, token, focusPoint, setFocusPoint }) => {
+const APIs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) => {
   const [error, setError] = useState(null);
   const [APIs, setAPIs] = useState(null);
   const [focusedAPI, setFocusedAPI] = useState(null);

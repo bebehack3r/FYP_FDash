@@ -54,6 +54,15 @@ const Dashboard = () => {
   const [error, setError] = useState(null);
 
   const token = localStorage.getItem('token');
+  let role = null;
+  if(token) {
+    let base64Url = token.split('.')[1];
+    let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    role = JSON.parse(jsonPayload)['role'];
+  };
 
   useEffect(() => {
     if (!token) {
@@ -69,8 +78,8 @@ const Dashboard = () => {
       <Workstage>
         <LeftSide>
           {!error ? <div style={{ width: '90%', marginLeft: '5%' }}>
-            <Logs setDisplayContents={setDisplayContents} focusPoint={focusPoint} setFocusPoint={setFocusPoint} token={token} />
-            <APIs setDisplayContents={setDisplayContents} focusPoint={focusPoint} setFocusPoint={setFocusPoint} token={token} />
+            <Logs setDisplayContents={setDisplayContents} focusPoint={focusPoint} setFocusPoint={setFocusPoint} token={token} role={role} />
+            <APIs setDisplayContents={setDisplayContents} focusPoint={focusPoint} setFocusPoint={setFocusPoint} token={token} role={role} />
           </div> : <p>{error}</p>}
         </LeftSide>
         <RightSide>

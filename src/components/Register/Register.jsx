@@ -113,7 +113,7 @@ const Register = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState('user');
   const [pass, setPass] = useState('');
   const [rePass, setRePass] = useState('');
   const [token, setToken] = useState(localStorage.getItem('token'));
