@@ -100,6 +100,14 @@ const HeaderLogo = styled.img`
   margin-right: 50px;
 `;
 
+const RoleOptions = styled.select`
+  width: 100%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-top: 8px;
+  margin-bottom: 15px;
+`;
+
 const Register = () => {
 
   const navigate = useNavigate();
@@ -128,6 +136,7 @@ const Register = () => {
   };
 
   const handleRole = (e) => {
+    console.log(e.target.value);
     setRole(e.target.value);
   };
 
@@ -181,7 +190,14 @@ const Register = () => {
             <LabelField htmlFor='email'>E-mail</LabelField>
             <InputField type='text' id='email' name='email' placeholder='Enter e-mail' onChange={handleEmail} />
             <LabelField htmlFor='role'>Role</LabelField>
-            <InputField type='text' id='role' name='role' placeholder='Enter role' onChange={handleRole} />
+            {/* <InputField type='text' id='role' name='role' placeholder='Enter role' onChange={handleRole} /> */}
+            <RoleOptions name='role' id='role' onChange={handleRole}>
+              <option value='user' selected>User</option>
+              <option value='analyst'>Analyst</option>
+              <option value='admin'>Admin</option>
+              <option value='superAdmin'>Super Admin</option>
+              <option value='suspended'>Suspended</option>
+            </RoleOptions>
             <LabelField htmlFor='password'>Password</LabelField>
             <InputField type='password' id='password' name='password' placeholder='Enter password' onChange={handlePass} />
             <LabelField htmlFor='repassword'>Confirm password</LabelField>
