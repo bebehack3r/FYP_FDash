@@ -111,9 +111,9 @@ const Login = () => {
         else if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
       }
-    } catch (error) {
-      console.error('Error fetching request:', error);
-      setError('Frontend server malfunction. Please, contact your supplier');
+    } catch (err) {
+      console.log(err);
+      // setError('Frontend server malfunction. Please, contact your supplier');
     }
   };
 
