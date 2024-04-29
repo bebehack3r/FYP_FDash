@@ -162,7 +162,7 @@ const ManageUsers = () => {
                 <UserListCell>{user.name}</UserListCell>
                 <UserListCell>{user.email}</UserListCell>
                 <UserListCell>
-                  <RoleOptions name='role' id='role' onChange={(e) => { handleRoleSwitch(user.id, e.target.value) }} disabled={allRoles.indexOf(role) > allRoles.indexOf(user.role) ? "true" : "false"}>
+                  <RoleOptions name='role' id='role' onChange={(e) => { handleRoleSwitch(user.id, e.target.value) }} disabled={allRoles.indexOf(role) > allRoles.indexOf(user.role) ? "false" : "true"}>
                     <option value='user' selected={user.role === 'user'}>User</option>
                     <option value='analyst' selected={user.role === 'analyst'}>Analyst</option>
                     <option value='admin' selected={user.role === 'admin'}>Admin</option>
@@ -176,7 +176,7 @@ const ManageUsers = () => {
             ))}
           </UsersListTable>
         </>}
-        {error && <p>error</p>}
+        {error && <p>{error}</p>}
         </UsersList>
       </Workstage>
     </Wrap>
