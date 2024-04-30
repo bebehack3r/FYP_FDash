@@ -159,7 +159,7 @@ const Landing = () => {
   };
 
   const checkVisibility = () => {
-    if(document.getElementById('dynamicBlock').getBoundingClientRect().top < window.innerHeight / 1.2) {
+    if(document.getElementById('dynamicBlock') && document.getElementById('dynamicBlock').getBoundingClientRect().top < window.innerHeight / 1.2) {
       const companiesAmount = document.getElementById('companiesAmnt');
       const threatsAmount = document.getElementById('threatsAmnt');
       const attacksAmount = document.getElementById('attacksAmnt');
