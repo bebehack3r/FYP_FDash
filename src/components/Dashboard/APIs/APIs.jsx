@@ -113,6 +113,8 @@ const APIs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
   const [customAlertInit, setCustomAlertInit] = useState(false);
   const [customAlertDescription, setCustomAlertDescription] = useState(null);
   const [customAlertType, setCustomAlertType] = useState(null);
+  const [customAlertID, setCustomAlertID] = useState(null);
+  const [customAlertEdition, setCustomAlertEdition] = useState(false);
 
   const genRanHex = size => [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join(''); // fuck react keys
 
@@ -175,9 +177,8 @@ const APIs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
             customAlertInit && <Row>
               <CustomAlertInputLeft type='text' id='desc' name='desc' placeholder='Describe alert' onChange={handleCustomAlertDescription} value={customAlertDescription} />
               <CustomAlertInput type='text' id='type' name='type' placeholder='Give alert type' onChange={handleCustomAlertType} value={customAlertType} />
-              <CutomAlertButton type='submit' id='submit' name='submit' onClick={handleCustomAlertCreateSubmit} value='Create' />
-              {/* { !customAlertFocus && <CutomAlertButton type='submit' id='submit' name='submit' onClick={handleCreateCustomAlertSubmit} value='Create' /> }
-              { customAlertFocus && <CutomAlertButton type='submit' id='submit' name='submit' onClick={handleEditCustomAlertSubmit} value='Edit' /> } */}
+              { customAlertEdition ? <CutomAlertButton type='submit' id='submit' name='submit' onClick={handleCustomAlertEditSubmit} value='Edit' />
+              : <CutomAlertButton type='submit' id='submit' name='submit' onClick={handleCustomAlertCreateSubmit} value='Create' /> }
             </Row>
           }
           <Table>
@@ -195,7 +196,7 @@ const APIs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
                       <TableCell key={ `${a.id}_desc`}>{ a.description }</TableCell>
                       <TableCell key={ `${a.id}_action`}>
                         <span key={ `${a.id}_action_span`} style={{ display: 'flex', width: '80%', marginLeft: '10%', justifyContent: 'space-evenly' }}>
-                          <CustomAlertActionButton key={ `${a.id}_action_edit`}>✏️</CustomAlertActionButton>
+                          <CustomAlertActionButton key={ `${a.id}_action_edit`} onClick={() => { handleCustomAlertEdit(a); }}>✏️</CustomAlertActionButton>
                           <CustomAlertActionButton key={ `${a.id}_action_remove`} onClick={() => { handleCustomAlertRemove(a.id); }}>❌</CustomAlertActionButton>
                         </span>
                       </TableCell>
@@ -440,6 +441,38 @@ const APIs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
       });
       if(response.data.message === 'OK') {
         fetchCustomAlerts(focusPoint.uuid);
+      } else {
+        if(response.data.message === 'ERROR') setError(response.data.data);
+        else setError('Backend server malfunction. Please, contact your supplier');
+      }
+    } catch (error) {
+      console.error('Error fetching logs:', error);
+      setError('Frontend server malfunction. Please, contact your supplier');
+    }
+  };
+
+  const handleCustomAlertEdit = (a) => {
+    setCustomAlertID(a.id);
+    setCustomAlertDescription(a.desc);
+    setCustomAlertType(a.type);
+    setCustomAlertEdition(true);
+    setCustomAlertInit(true);
+  };
+
+  const handleCustomAlertEditSubmit = async () => {
+    try {
+      const response = await axios.post(process.env.REACT_APP_BACKEND_URL + '/update_threat_notification/', {
+        id: customAlertID, 
+        type: customAlertType,
+        desc: customAlertDescription,
+        date: customAlertsAPI.filter(a => a.id === customAlertID)[0].date
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if(response.data.message === 'OK') {
+        window.location.reload(false);
       } else {
         if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
