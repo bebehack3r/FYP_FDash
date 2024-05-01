@@ -342,7 +342,7 @@ const Logs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
 
   const handleCustomAlertEdit = (a) => {
     setCustomAlertID(a.id);
-    setCustomAlertDescription(a.desc);
+    setCustomAlertDescription(a.description);
     setCustomAlertType(a.type);
     setCustomAlertEdition(true);
     setCustomAlertInit(true);
