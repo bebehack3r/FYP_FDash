@@ -472,7 +472,12 @@ const APIs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
         }
       });
       if(response.data.message === 'OK') {
-        window.location.reload(false);
+        setCustomAlertID(null);
+        setCustomAlertDescription(null);
+        setCustomAlertType(null);
+        setCustomAlertEdition(false);
+        setCustomAlertInit(false);
+        fetchCustomAlerts(focusPoint.uuid);
       } else {
         if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
