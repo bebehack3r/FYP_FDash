@@ -43,7 +43,7 @@ const TableCell = styled.td`
 `;
 
 const TableHeader = styled(TableCell)`
-  background: #2D2828;
+  background: #6943C4;
   font-weight: bold;
 `;
 
