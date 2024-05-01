@@ -158,8 +158,8 @@ const APIs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
         setError('Frontend server malfunction. Please, contact your supplier');
       }
     };
-    analyzeAPI(focusedAPI.id);
-    fetchCustomAlerts(focusedAPI.uuid);
+    analyzeAPI(focusPoint.id);
+    fetchCustomAlerts(focusPoint.uuid);
   }, [focusedAPI]);
 
   useEffect(() => {
@@ -411,7 +411,7 @@ const APIs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
   const handleCustomAlertCreateSubmit = async () => {
     try {
       const response = await axios.post(process.env.REACT_APP_BACKEND_URL + '/create_threat_notification/', {
-        uuid: focusedAPI.uuid, 
+        uuid: focusPoint.uuid, 
         type: customAlertType,
         desc: customAlertDescription
       }, {
@@ -420,7 +420,7 @@ const APIs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
         }
       });
       if(response.data.message === 'OK') {
-        fetchCustomAlerts(focusedAPI.uuid);
+        fetchCustomAlerts(focusPoint.uuid);
       } else {
         if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
@@ -439,7 +439,7 @@ const APIs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
         }
       });
       if(response.data.message === 'OK') {
-        fetchCustomAlerts(focusedAPI.uuid);
+        fetchCustomAlerts(focusPoint.uuid);
       } else {
         if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
@@ -487,7 +487,7 @@ const APIs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
       <h2>– Suricata API</h2>
       { 
         APIs && APIs.map(api => <Row key={ `${api.id}_row` }>
-          <ActiveSpan key={ `${api.id}_remove` } onClick={()=>{ handleRemoveAPI(api.id) }} style={{ marginRight: '10px' }}>❌</ActiveSpan>
+          {['analyst', 'admin','superAdmin','gigaAdmin'].includes(role) && <ActiveSpan key={ `${api.id}_remove` } onClick={()=>{ handleRemoveAPI(api.id) }} style={{ marginRight: '10px' }}>❌</ActiveSpan>}
           <ActiveSpan key={ `${api.id}_name` } onClick={() => { handleSelectAPI(api.id) }} style={{ fontWeight: 'bold' }}>{api.url}</ActiveSpan>
         </Row>) 
       }

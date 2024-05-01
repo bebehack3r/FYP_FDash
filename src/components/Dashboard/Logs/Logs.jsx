@@ -155,8 +155,8 @@ const Logs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
         setError('Frontend server malfunction. Please, contact your supplier');
       }
     };
-    analyzeLog(focusedLog.id);
-    fetchCustomAlerts(focusedLog.uuid);
+    analyzeLog(focusPoint.id);
+    fetchCustomAlerts(focusPoint.uuid);
   }, [focusedLog]);
 
   useEffect(() => {
@@ -298,7 +298,7 @@ const Logs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
   const handleCustomAlertCreateSubmit = async () => {
     try {
       const response = await axios.post(process.env.REACT_APP_BACKEND_URL + '/create_threat_notification/', {
-        uuid: focusedLog.uuid, 
+        uuid: focusPoint.uuid, 
         type: customAlertType,
         desc: customAlertDescription
       }, {
@@ -307,7 +307,7 @@ const Logs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
         }
       });
       if(response.data.message === 'OK') {
-        fetchCustomAlerts(focusedLog.uuid);
+        fetchCustomAlerts(focusPoint.uuid);
       } else {
         if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
@@ -326,7 +326,7 @@ const Logs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
         }
       });
       if(response.data.message === 'OK') {
-        fetchCustomAlerts(focusedLog.uuid);
+        fetchCustomAlerts(focusPoint.uuid);
       } else {
         if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
