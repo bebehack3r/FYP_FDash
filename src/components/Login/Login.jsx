@@ -111,8 +111,8 @@ const Login = () => {
         else setError('Backend server malfunction. Please, contact your supplier');
       }
     } catch (err) {
-      console.log(err);
-      setError('Frontend server malfunction. Please, contact your supplier');
+      if(err.response?.data?.message === 'NULL') setError('Incorrect e-mail and/or password, please, try again');
+      else setError('Frontend server malfunction. Please, contact your supplier');
     }
   };
 
@@ -130,7 +130,7 @@ const Login = () => {
         <h1>Welcome to Dash!</h1>
         <h1>Web-based IDS System</h1>
         <ActionBlockDiv>
-          {error && <h3 style={{ width: '80%', marginLeft: '10%', textAlign: 'center' }}>{ error }</h3>}
+          {error && <h3 style={{ width: '80%', textAlign: 'center' }}>{ error }</h3>}
           <ActionBlockDivInner>
             <LabelField htmlFor='login'>E-mail</LabelField>
             <InputField type='text' id='login' name='login' onChange={handleEmail} placeholder='Enter your e-mail' />
