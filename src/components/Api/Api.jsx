@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import Menu from '../Menu/Menu.jsx';
 
 import logo from './logo.png';
+import suricata from './suricata.png';
 
 const Wrap = styled.div`
   display: flex;
@@ -92,6 +93,27 @@ const SubmitButton = styled.input`
   }
 `;
 
+const Image = styled.img`
+  max-width: 40%; 
+  height: auto; 
+  margin-right: 20px;
+  margin-left: 70px;
+  margin-bottom: 50px;
+  margin-top: 50px;
+`;
+
+const Container = styled.div`
+ display: flex; 
+ align-items: center; 
+ justify-content: flex-start; 
+`;
+
+const Text = styled.p`
+ max-width: 70%; 
+ margin-right: 20px;
+ padding-left: 20px;
+`;
+
 const Api = () => {
   const navigate = useNavigate();
   const [url, setURL] = useState(null);
@@ -145,6 +167,19 @@ const Api = () => {
               <SubmitButton type='submit' id='submit' name='submit' onClick={addAPI} value='Add Endpoint!' />
             </OptionButtons>
           </ActionBlockDivInner>
+          <Container>
+            <Image src={suricata}/>
+            <Text><h1>How to use Suricata API Endpoint?</h1>
+            <ol>
+             <li>Enter the URL of the Suricata API endpoint you want to add.</li><br/>
+             <li>Click "Add Endpoint!"</li><br/>
+             <li>Your API will be added to the dashboard.</li><br/>
+             <li>You can see the API endpoint in the dashboard.</li><br/>
+             <li>You can delete the API endpoint in the dashboard.</li><br/>
+             <li>You can edit the API endpoint in the dashboard.</li><br/>
+           </ol>
+          </Text>
+         </Container>
         </ActionBlockDiv>
       </ActionBlock>
     </Wrap>

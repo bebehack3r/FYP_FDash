@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import Menu from '../Menu/Menu.jsx';
 
 import logo from './logo.png';
+import snort from './snort.gif';
 
 const Wrap = styled.div`
   display: flex;
@@ -106,6 +107,28 @@ const FileContents = styled.div`
   width: 90%;
 `;
 
+const Image = styled.img`
+  max-width: 40%; 
+  height: auto; 
+  width: auto;
+  margin-right: 70px;
+  margin-left: 70px;
+  margin-bottom: 50px;
+  margin-top: 50px;
+`;
+
+const Container = styled.div`
+ display: flex; 
+ align-items: center; 
+ justify-content: flex-start; 
+`;
+
+const Text = styled.p`
+ max-width: 70%; 
+ margin-right: 20px;
+ padding-left: 20px;
+`;
+
 const Upload = () => {
   const navigate = useNavigate();
   const [file, setFile] = useState(null);
@@ -176,6 +199,19 @@ const Upload = () => {
           {contents && <FileContents>
             { contents.map(l => <pre>{l}</pre>) }
           </FileContents>}
+          <Container>
+            <Image src={snort}/>
+            <Text><h1>How to upload Snort log file?</h1>
+            <ol>
+             <li>Click "Upload Log File!"</li><br/>
+             <li>Upload Snort log file </li><br/>
+             <li>Click "Read" (optional)</li><br/>
+             <li>Click "Upload File!"</li><br/>
+             <li>You will be redirected to dashboard</li><br/>
+             <li>You can see your uploaded file</li><br/>          
+           </ol>
+          </Text>
+         </Container>
         </ActionBlockDiv>
       </ActionBlock>
     </Wrap>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import styled from 'styled-components';
 import axios from 'axios';
-import {LineChart, Line, PieChart, Pie, Cell, Legend, Tooltip,BarChart, Bar, Rectangle, XAxis, YAxis, ZAxis, CartesianGrid } from 'recharts';
+import {LineChart, Line, PieChart, Pie, Cell, Legend, Tooltip,BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'
@@ -44,7 +44,7 @@ const TableCell = styled.td`
 `;
 
 const TableHeader = styled(TableCell)`
-  background: #2D2828;
+  background: #6943C4;
   font-weight: bold;
 `;
 
