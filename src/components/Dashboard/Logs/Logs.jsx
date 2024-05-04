@@ -222,6 +222,7 @@ const Logs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
               </TableRow>
               { 
                 arr.map(a => {
+                  console.log(a);
                   return(
                     <TableRow key={ `${a.lineNumber}_row` }>
                         <TableCell key={ `${a.lineNumber}_type` }>{ a.threatType }</TableCell>
@@ -253,7 +254,7 @@ const Logs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
           <h2>Activity Map:</h2>
           <MapContainer style={{ width: '100%', height: '50vh', marginBottom: '5px' }} center={[30,30]} zoom={2} scrollWheelZoom={false}>
             <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            { arr.map(a => a.ipLocation && <Marker key={a.lineNumber} position={a.ipLocation} />) }
+            { arr.map(a => a.ipLocation && <Marker key={a.lineNumber} position={a.ipLocation.split(',')} />) }
           </MapContainer>
           <span style={{ marginBottom: '20px', color: 'rgba(255,255,255,0.1)' }}>*Should any IP addresses yield a location a pin will appear on the map.</span>
         </Column>
