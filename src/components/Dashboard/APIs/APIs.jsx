@@ -262,21 +262,33 @@ const APIs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
     };
     const formPieChart = (arr) => {
       // Define data for the pie chart
-      const data = arr.map((a) => ({
-        name: a.signature,
-        value: a.severity,
-      }));
-    
+      const data = arr.reduce((acc, curr) => {
+        const existing = acc.find(item => item.name === curr.signature); // Group by 'signature'
+        if (existing) {
+          existing.value += curr.severity; // Aggregate 'severity' values
+        } else {
+          acc.push({ name: curr.signature, value: curr.severity });
+        }
+        return acc;
+      }, []);
       // Generate unique colors based on the index
       const generateColor = (index) => {
         const hue = (index * 137.5) % 360; // This formula ensures a unique color for each segment
         return `hsl(${hue}, 70%, 50%)`;
       };
-    
+
+      // Function to slice text at a given length and add ellipsis
+      const sliceText = (text, maxLength) => {
+        if (text.length > maxLength) {
+          return text.slice(0, maxLength) + '...';
+        }
+        return text;
+      };
+      // Render the pie chart
       return (
         <Column>
           <h2>Severity level of Detected Alerts with numbers:</h2>
-          <PieChart width={1000} height={500}>
+          <PieChart width={1200} height={500}>
             <Pie
               data={data}
               dataKey="value"
@@ -292,7 +304,13 @@ const APIs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
                 <Cell key={`cell-${index}`} fill={generateColor(index)} />
               ))}
             </Pie>
-            <Legend layout="vertical" align="right" verticalAlign="middle" />
+            <Legend
+              layout="vertical"
+              align="right"
+              verticalAlign="middle"
+              wrapperStyle={{ overflowY: 'auto', maxHeight: 200 }} // Handling long legends
+              formatter={(value) => sliceText(value, 60)} // Custom formatter for the legend text
+            />
             <Tooltip />
           </PieChart>
         </Column>
@@ -338,24 +356,22 @@ const APIs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
         );
       };
       const formBarChart = (arr) => {
-        
-      const data = arr.map((a) => ({
-        severity_level: a.severity_level,
-        severity: a.severity,
-      }));
-      return (
+        const data = arr.map((a) => ({
+          severity_level: a.severity_level,
+          severity: a.severity,
+        }));
+        return (
         <Column><h2>Severity Levels:</h2>
         <BarChart
-          width={1000}
-          height={500}
-          data={data}
-          margin={{
-            top: 20,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-        >
+        width={1000}
+        height={500}
+        data={data}
+        margin={{
+          top: 20,
+          right: 30,
+          left: 20,
+          bottom: 5,
+        }}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="severity_level" name="Severity Level" />
           <YAxis name="Alert Count" />
