@@ -4,6 +4,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 
 import plexus from './145026-785786148.mp4';
+import landingVideo from './landing_video.mp4';
 
 import Menu from '../Menu/Menu.jsx';
 
@@ -243,12 +244,15 @@ const Landing = () => {
           <source src={plexus} type='video/mp4' />
         </video>
       </Block>
-      <Block>
+      <Block style={{ height: '80vh' }}>
         { 
         // ABOUT BLOCK 
         }
         <h1>Dash represents a step forward in creating a more secure and resilient digital environment.</h1>
         <p>With Dash, we strive to transform raw data into insightful visualizations, providing security professionals with a comprehensive and intuitive understanding of their network activity.</p>
+        <video autoPlay loop muted style={{ width: '60%', marginLeft: '20%', marginBottom: '5vh' }}>
+          <source src={landingVideo} type='video/mp4' />
+        </video>
       </Block>
       <Block style={{ height: '30vh' }}>
         { 
