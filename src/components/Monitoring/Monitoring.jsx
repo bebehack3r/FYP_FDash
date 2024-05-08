@@ -51,6 +51,7 @@ const AccessLogsListCell = styled.td`
   padding-bottom: 8px;
   padding-left: 5px;
   padding-right: 5px;
+  max-width: 70%;
 `;
 
 const Monitoring = () => {
@@ -72,7 +73,7 @@ const Monitoring = () => {
           }
         });
         console.log(response.data.data);
-        if(response.data.message === 'OK') setAccessLogs(response.data.data);
+        if(response.data.message === 'OK') setAccessLogs(response.data.data.reverse());
         else {
           if(response.data.message === 'ERROR') setError(response.data.data);
           else setError('Backend server malfunction. Please, contact your supplier');
@@ -97,7 +98,7 @@ const Monitoring = () => {
             <AccessLogsListCell style={{ width: '6vw' }}><b>IP</b></AccessLogsListCell>
             <AccessLogsListCell style={{ width: '8vw' }}><b>Endpoint</b></AccessLogsListCell>
             <AccessLogsListCell><b>Request Body</b></AccessLogsListCell>
-            {accessLogs && accessLogs.reverse().map(log => (
+            {accessLogs && accessLogs.map(log => (
               <AccessLogsListEntry key={log.id}>
                 <AccessLogsListCell>{new Date(log.date).toLocaleDateString()}</AccessLogsListCell>
                 <AccessLogsListCell>{log.ip}</AccessLogsListCell>
