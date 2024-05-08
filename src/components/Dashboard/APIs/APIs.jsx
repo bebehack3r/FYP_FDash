@@ -175,8 +175,8 @@ const APIs = ({ setDisplayContents, token, focusPoint, setFocusPoint, role }) =>
           </Row>
           {
             customAlertInit && <Row>
-              <CustomAlertInputLeft type='text' id='desc' name='desc' placeholder='Describe alert' onChange={handleCustomAlertDescription} value={customAlertDescription} />
               <CustomAlertInput type='text' id='type' name='type' placeholder='Give alert type' onChange={handleCustomAlertType} value={customAlertType} />
+              <CustomAlertInputLeft type='text' id='desc' name='desc' placeholder='Describe alert' onChange={handleCustomAlertDescription} value={customAlertDescription} />
               { customAlertEdition ? <CutomAlertButton type='submit' id='submit' name='submit' onClick={handleCustomAlertEditSubmit} value='Edit' />
               : <CutomAlertButton type='submit' id='submit' name='submit' onClick={handleCustomAlertCreateSubmit} value='Create' /> }
             </Row>

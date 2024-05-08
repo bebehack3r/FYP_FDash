@@ -97,7 +97,7 @@ const Monitoring = () => {
             <AccessLogsListCell style={{ width: '6vw' }}><b>IP</b></AccessLogsListCell>
             <AccessLogsListCell style={{ width: '8vw' }}><b>Endpoint</b></AccessLogsListCell>
             <AccessLogsListCell><b>Request Body</b></AccessLogsListCell>
-            {accessLogs && accessLogs.map(log => (
+            {accessLogs && accessLogs.reverse().map(log => (
               <AccessLogsListEntry key={log.id}>
                 <AccessLogsListCell>{new Date(log.date).toLocaleDateString()}</AccessLogsListCell>
                 <AccessLogsListCell>{log.ip}</AccessLogsListCell>
