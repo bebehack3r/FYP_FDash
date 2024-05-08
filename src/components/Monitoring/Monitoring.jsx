@@ -51,7 +51,7 @@ const AccessLogsListCell = styled.td`
   padding-bottom: 8px;
   padding-left: 5px;
   padding-right: 5px;
-  max-width: 70%;
+  max-width: 65vw;
 `;
 
 const Monitoring = () => {
