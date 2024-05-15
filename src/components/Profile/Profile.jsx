@@ -115,6 +115,7 @@ const Profile = () => {
   const [role, setRole] = useState('');
   const [userID, setUserID] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token'));
+  const [success, setSuccess] = useState('');
   const [error, setError] = useState(null);
 
   const handleName = (e) => {
@@ -141,8 +142,12 @@ const Profile = () => {
           Authorization: `Bearer ${token}`
         } 
       });
-      if(response.data.message === 'OK') navigate('/profile');
-      else {
+      if(response.data.message === 'OK') {
+        setSuccess("Profile updated");
+        setTimeout(() => {
+          setSuccess('');
+        }, 5000);
+      } else {
         if(response.data.message === 'ERROR') setError(response.data.data);
         else setError('Backend server malfunction. Please, contact your supplier');
       }
@@ -206,6 +211,7 @@ const Profile = () => {
             <HeaderLogo src={logo} />
             <h1>User Profile</h1>
           </Header>
+          { success && <h3 style={{ color: 'white' }}>{success}</h3> }
           <AvatarImageBlock>
             <AvatarImage src={avatar} />
           </AvatarImageBlock>

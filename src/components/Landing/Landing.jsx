@@ -244,7 +244,7 @@ const Landing = () => {
           <source src={plexus} type='video/mp4' />
         </video>
       </Block>
-      <Block style={{ height: '80vh' }}>
+      <Block style={{ height: '90vh' }}>
         { 
         // ABOUT BLOCK 
         }
